@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Nginx::Redis</title>
+	<meta name="description" content="Pod documentation for Nginx::Redis" />
+	<meta name="inputfile" content="&lt;standard input&gt;" />
+	<meta name="outputfile" content="&lt;standard output&gt;" />
+	<meta name="created" content="Mon Dec  5 00:30:38 2011" />
+	<meta name="generator" content="Pod::Xhtml 1.61" />
+<link rel="stylesheet" href="../pod.css"/></head>
+<body>
+<div class="top">
+<h1>nginx-perl</h1>
+<div class="item"><a href="../index.html">Home</a></div>
+<div class="item">
+Documentation:<br />
+<blockquote>
+<a href="../Nginx.html">Nginx</a><br /><a href="../Nginx/Util.html">Nginx::Util</a><br /><b>Nginx::Redis</b><br /></blockquote>
+</div>
+</div>
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+
+<ul><li><a href="#NAME">NAME</a></li>
+<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+<li><a href="#EXPORT">EXPORT</a></li>
+<li><a href="#FUNCTIONS">FUNCTIONS</a></li>
+<li><a href="#AUTHOR">AUTHOR</a></li>
+<li><a href="#LICENSE">LICENSE</a>
+</li>
+</ul><hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME</h1>
+<div id="NAME_CONTENT">
+<p>Nginx::Redis - asynchronous redis client for nginx-perl</p>
+
+</div>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+<div id="SYNOPSIS_CONTENT">
+<pre>    use Nginx::Redis;
+
+    
+
+
+    ngx_redis '127.0.0.1:6379', ['GET', 'mykey'], sub {
+        my ($reply) = @_;
+
+        unless ($reply) {
+            warn &quot;error: no reply from redis\n&quot;;
+            return;
+        }
+
+        # $reply = ['$', 'myvalue']
+    };
+
+</pre>
+
+</div>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+<div id="DESCRIPTION_CONTENT">
+<p>Fast asynchronous redis client for <strong>nginx-perl</strong> that supports pipelining
+and doesn't provide any command-bound interface. You can use it
+for almost any feature of redis. Currently it doesn't support 
+pub/sub-like flow though. </p>
+<p><cite>Nginx::Redis</cite> relies on <cite>Redis::Parser::XS</cite> to parse reply messages. 
+So you have to install it as well.</p>
+
+</div>
+<h1 id="EXPORT">EXPORT</h1>
+<div id="EXPORT_CONTENT">
+<pre>    ngx_redis
+    ngx_redis_client
+    ngx_redis_request
+
+</pre>
+
+</div>
+<h1 id="FUNCTIONS">FUNCTIONS</h1>
+<div id="FUNCTIONS_CONTENT">
+<dl>
+	<dt>ngx_redis &quot;$ip:$port:$auth:$timeout&quot;, ['GET', 'mykey'], sub { };</dt>
+	<dd>
+		<p>Encodes and sends request to the redis server specified by <code>$ip:$port</code>.
+If password is specified in <code>$auth</code> then AUTH command will precede. </p>
+		<p>Calls back with reply in <code>$_[0]</code>. Format of the reply described in
+<cite>Redis::Parser::XS</cite>.</p>
+		<p>On error calls back without any arguments. Tries to reconnect on the
+next request.</p>
+		<p>Every connection is cached forever.</p>
+		<p>Example:</p>
+<pre>    ngx_redis '127.0.0.1', ['PING'], sub {
+        my ($reply) = @_;
+
+        # $reply = ['+', 'PONG']
+    };
+
+</pre>
+	</dd>
+</dl>
+
+</div>
+<h1 id="AUTHOR">AUTHOR</h1>
+<div id="AUTHOR_CONTENT">
+<p>Alexandr Gomoliako &lt;zzz@zzz.org.ua&gt;</p>
+
+</div>
+<h1 id="LICENSE">LICENSE</h1>
+<div id="LICENSE_CONTENT">
+<p>Copyright 2011 Alexandr Gomoliako. All rights reserved.</p>
+<p>This module is free software. It may be used, redistributed and/or modified 
+under the same terms as <strong>nginx</strong> itself.</p>
+
+</div>
+</div></body>
+</html>

@@ -1,0 +1,7 @@
+*.in
+*.tmp
+*.orig
+*.bak
+*.swp
+*.core
+tmp/*

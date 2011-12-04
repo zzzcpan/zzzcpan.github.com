@@ -1,0 +1,15 @@
+
+=head1 NAME
+
+nginx-perl - full-featured perl support for nginx
+
+=head1 DESCRIPTION
+
+
+
+=head1 DOWNLOAD
+
+L<nginx-perl-1.1.9.1-prerelease.tar.gz|http://zzzcpan.github.com/nginx-perl-1.1.9.1-prerelease.tar.gz> 659K 2011-12-05 00:38 
+
+=cut
+

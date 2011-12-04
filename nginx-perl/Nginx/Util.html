@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Nginx::Util</title>
+	<meta name="description" content="Pod documentation for Nginx::Util" />
+	<meta name="inputfile" content="&lt;standard input&gt;" />
+	<meta name="outputfile" content="&lt;standard output&gt;" />
+	<meta name="created" content="Mon Dec  5 00:30:38 2011" />
+	<meta name="generator" content="Pod::Xhtml 1.61" />
+<link rel="stylesheet" href="../pod.css"/></head>
+<body>
+<div class="top">
+<h1>nginx-perl</h1>
+<div class="item"><a href="../index.html">Home</a></div>
+<div class="item">
+Documentation:<br />
+<blockquote>
+<a href="../Nginx.html">Nginx</a><br /><b>Nginx::Util</b><br /><a href="../Nginx/Redis.html">Nginx::Redis</a><br /></blockquote>
+</div>
+</div>
+
+<div class="pod">
+<!-- INDEX START -->
+<h3 id="TOP">Index</h3>
+
+<ul><li><a href="#NAME">NAME</a></li>
+<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+<li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+<li><a href="#EXPORT">EXPORT</a></li>
+<li><a href="#FUNCTIONS">FUNCTIONS</a></li>
+<li><a href="#AUTHOR">AUTHOR</a></li>
+<li><a href="#LICENSE">LICENSE</a>
+</li>
+</ul><hr />
+<!-- INDEX END -->
+
+<h1 id="NAME">NAME</h1>
+<div id="NAME_CONTENT">
+<p>Nginx::Util - utility functions </p>
+
+</div>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+<div id="SYNOPSIS_CONTENT">
+<pre>    use Nginx::Util;
+
+    my $wbuf = '';
+    my $rbuf = &quot;GET /shouldnotbethere HTTP/1.0\x0d\x0a&quot;.
+               &quot;Host: www.google.com\x0d\x0a&quot;.
+               &quot;Connection: close\x0d\x0a&quot;.
+               &quot;\x0d\x0a&quot;;
+
+    ngx_http_req '209.85.148.104', 80, $rbuf, $wbuf, 5, sub {
+        my $http_headers = shift;
+
+        if ($! &amp;&amp; $! != NGX_EOF) {
+            ...
+        }
+
+        if ($http_headers-&gt;{'_status'} ... ) {
+            ...
+        }
+
+        if ($http_headers-&gt;{'content-type'}-&gt;[0] ... ) {
+            ...
+        }
+    };
+
+</pre>
+
+</div>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+<div id="DESCRIPTION_CONTENT">
+<p>Just a few useful functions to quickly start using
+asynchronous model.</p>
+
+</div>
+<h1 id="EXPORT">EXPORT</h1>
+<div id="EXPORT_CONTENT">
+<pre>    ngx_http_req
+    ngx_pure_http_req
+
+</pre>
+
+</div>
+<h1 id="FUNCTIONS">FUNCTIONS</h1>
+<div id="FUNCTIONS_CONTENT">
+<dl>
+	<dt>ngx_http_req $ip, $port, $reqbuf, $respbuf, $timeout, sub { };</dt>
+	<dd>
+		<p>Connects to <code>$ip:$port</code>, sends http request from <code>$reqbuf</code>, 
+parses response header and reads an entire body into <code>$respbuf</code>. 
+Calls back with parsed response in <code>$_[0]</code> in this form:</p>
+<pre>    {  _status        =&gt; 200,
+       _message       =&gt; 'OK',
+       _version       =&gt; 'HTTP/1.0',
+       content-type   =&gt; ['text/html'],
+       content-length =&gt; [1234]          }
+
+</pre>
+		<p>On errors calls back without any arguments. You may also check $!
+when error occurs. </p>
+		<p>Example:</p>
+<pre>    my $buf = &quot;GET /shouldnotbethere HTTP/1.0\x0d\x0a&quot;.
+              &quot;Host: www.google.com\x0d\x0a&quot;.
+              &quot;Connection: close\x0d\x0a&quot;.
+              &quot;\x0d\x0a&quot;;
+
+    ngx_http_req '209.85.148.104', 80, $buf, $buf, 15, sub {
+        my $h    = shift;
+        my $dump = Dumper($h);
+
+        warn &quot;$!\n$dump\n$buf\n\n\n&quot;;
+    };
+
+</pre>
+	</dd>
+	<dt>ngx_pure_http_req $ip, $port, $reqbuf, $respbuf, $timeout, sub { };</dt>
+	<dd>
+		<p>Same as <code>ngx_http_req</code> but without any queueing. To use for healthcheck 
+or things like that.</p>
+	</dd>
+</dl>
+
+</div>
+<h1 id="AUTHOR">AUTHOR</h1>
+<div id="AUTHOR_CONTENT">
+<p>Alexandr Gomoliako &lt;zzz@zzz.org.ua&gt;</p>
+
+</div>
+<h1 id="LICENSE">LICENSE</h1>
+<div id="LICENSE_CONTENT">
+<p>Copyright 2011 Alexandr Gomoliako. All rights reserved.</p>
+<p>This module is free software. It may be used, redistributed and/or modified 
+under the same terms as <strong>nginx</strong> itself.</p>
+
+</div>
+</div></body>
+</html>
