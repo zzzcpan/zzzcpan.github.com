@@ -7,6 +7,10 @@ nginx-perl - full-featured perl support for nginx
 
 L<nginx-perl-1.1.9.1-prerelease.tar.gz|http://zzzcpan.github.com/nginx-perl-1.1.9.1-prerelease.tar.gz> 659K 2011-12-05 00:38 
 
+=head1 GITHUB
+
+L<https://github.com/zzzcpan/nginx-perl>
+
 =head1 DESCRIPTION
 
 nginx-perl is a high-performance asynchronous perl web server.
