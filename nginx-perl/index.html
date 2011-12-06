@@ -6,7 +6,7 @@
 	<meta name="description" content="Pod documentation for nginx-perl" />
 	<meta name="inputfile" content="&lt;standard input&gt;" />
 	<meta name="outputfile" content="&lt;standard output&gt;" />
-	<meta name="created" content="Mon Dec  5 00:44:28 2011" />
+	<meta name="created" content="Tue Dec  6 03:44:21 2011" />
 	<meta name="generator" content="Pod::Xhtml 1.61" />
 <link rel="stylesheet" href="index.css"/></head>
 <body>
@@ -26,20 +26,99 @@ Documentation:<br />
 <p>nginx-perl - full-featured perl support for nginx</p>
 
 </div>
-<h1 id="DESCRIPTION">DESCRIPTION</h1>
-<div id="DESCRIPTION_CONTENT">
-
-
-
-
-
-
-
-
-</div>
 <h1 id="DOWNLOAD">DOWNLOAD</h1>
 <div id="DOWNLOAD_CONTENT">
 <p><a href="http://zzzcpan.github.com/nginx-perl-1.1.9.1-prerelease.tar.gz">nginx-perl-1.1.9.1-prerelease.tar.gz</a> 659K 2011-12-05 00:38 </p>
+
+</div>
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+<div id="DESCRIPTION_CONTENT">
+<p>nginx-perl is a high-performance asynchronous perl web server.
+It is designed to provide some level of access to nginx's event loop
+from embedded perl. And not just some, but with simplicity in mind.</p>
+
+</div>
+<h2 id="FASTER_THAN_NODE_JS">FASTER THAN NODE.JS</h2>
+<div id="FASTER_THAN_NODE_JS_CONTENT">
+<p>Asynchronous API is designed to be both simple and fast. Even though
+simplicity was the goal, nginx-perl can easily beat node.js in performance.
+To verify there is a simple redis-based application for both node.js and 
+nginx-perl. </p>
+
+</div>
+<h2 id="FIRST_CLASS_HTTP_SERVER">FIRST-CLASS HTTP SERVER</h2>
+<div id="FIRST_CLASS_HTTP_SERVER_CONTENT">
+<p>It's nginx. Nothing can compete with this.</p>
+<p>And it's not just about HTTP protocol, it is also out of the box 
+process management, logging, security and lots of various 3rd party 
+modules available for nginx.</p>
+
+</div>
+<h2 id="SMP_OUT_OF_THE_BOX">SMP OUT OF THE BOX</h2>
+<div id="SMP_OUT_OF_THE_BOX_CONTENT">
+<p>Nginx allows you to start as many workers as you need. Easy to scale.</p>
+
+</div>
+<h2 id="SIMPLE_BUT_POWERFUL">SIMPLE BUT POWERFUL</h2>
+<div id="SIMPLE_BUT_POWERFUL_CONTENT">
+<p>nginx-perl does actual reading and writing but leaves flow control 
+completely up to us. So we can focus on the thing that we want to do
+rather than dealing with syscalls.</p>
+<p>Here is an example of low-level asynchronous HTTP request:</p>
+<pre>    ngx_connector '1.2.3.4', 80, 15, sub {
+        return NGX_CLOSE                # close connection
+              if  $!;                   # on error
+
+        my $c   = shift;
+        my $buf = &quot;GET /&quot; . &quot;\x0d\x0a&quot;;
+
+        ngx_writer $c, $buf, 15, sub {
+            return NGX_CLOSE            # close connection
+                  if  $!;               # on error
+
+            $buf = '';                  # clear buffer
+
+            return NGX_READ;		# start reading response
+        };
+
+        ngx_reader $c, $buf, 0, 0, 15, sub {
+            return NGX_CLOSE            # close connection
+                  if  $!;               # on any error, incl. EOF
+
+            warn &quot;buf = '$buf'\n&quot;;
+
+            $buf = '';                  # clear buffer 
+
+            return NGX_READ;            # read again
+        };        
+
+        return NGX_WRITE;               # send request
+    };
+
+</pre>
+
+</div>
+<h2 id="FEATURES">FEATURES</h2>
+<div id="FEATURES_CONTENT">
+<dl>
+	<dt>full official nginx perl API;</dt>
+	<dt>asynchronous connections (ngx_connector, ngx_reader, ngx_writer);</dt>
+	<dt>timer (ngx_timer);</dt>
+	<dt>SSL without cached sessions (ngx_ssl_handshaker);</dt>
+	<dt>simple resolver (ngx_resolver);</dt>
+	<dt>access handlers (perl_access);</dt>
+	<dt>app handlers (perl_app);</dt>
+	<dt>configuration level eval (perl_eval);</dt>
+	<dt>init_worker, exit_worker handlers (perl_init_worker, perl_exit_worker);</dt>
+	<dt>client connection takeover for websockets, etc;</dt>
+</dl>
+
+
+
+
+
+
+
 
 </div>
 </div></body>
