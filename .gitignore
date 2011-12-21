@@ -1,7 +1,10 @@
-*.in
 *.tmp
 *.orig
 *.bak
 *.swp
 *.core
 tmp/*
+nginx-perl/*.in
+nginx-perl/*/*.in
+nginx-perl/*/*/*.in
+Nginx-Perl-*

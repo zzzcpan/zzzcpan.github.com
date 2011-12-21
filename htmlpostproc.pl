@@ -8,55 +8,66 @@ our $Script  = 'htmlpostproc.pl';
 our $VERSION = '0.01';
 
 my $item = shift;
-my $base = shift;
+my $base = shift || '';
 
 local $/;
 local $_ = <STDIN>;
 
-my $inj = "<div class=\"top\">\n";
 
-    $inj .= "<h1>nginx-perl</h1>\n";
+my $docum;
+my $documli;
 
-    foreach ( [ 'Home',        'index.html'      ],
-             # [ 'Download',    'download.html'   ],
-             # [ 'Benchmark',   'benchmark.html'  ] 
-                                                    ) {
+    foreach my $pair ( [ 'Nginx',        'Nginx.html',      ],
+                       [ 'Nginx::Test',  'Nginx/Test.html'  ],
+                       [ 'Nginx::Util',  'Nginx/Util.html'  ],
+                       [ 'Nginx::Redis', 'Nginx/Redis.html' ], 
+                       [ 'Redis::Parser::XS', 'Redis/Parser/XS.html' ], 
+                       [ 'Nginx::Perl',  'Nginx/Perl.html'  ] ) {
 
-        my ($name, $href) = @$_;
+        my ($name, $href) = @$pair;
 
-        if ($name eq $item) {
-            $inj .= "<div class=\"item\"><b>$name</b></div>\n";
-        } else {
-            $inj .= "<div class=\"item\">".
-                        "<a href=\"$base$href\">$name</a></div>\n";
-        }
-    }
-
-    $inj .= "<div class=\"item\">\n";
-    $inj .= "Documentation:<br />\n";
-    $inj .= "<blockquote>\n";
-
-    foreach ( [ 'Nginx',        'Nginx.html',     ],
-              [ 'Nginx::Util',  'Nginx/Util.html' ],
-              [ 'Nginx::Redis', 'Nginx/Redis.html' ] ) {
-
-        my ($name, $href) = @$_;
+        $documli .= "<li>";
 
         if ($name eq $item) {
-            $inj .= "<b>$name</b>";
+            $docum   .= "<b>$name</b>";
+            $documli .= "<b>$name</b>";
         } else {
-            $inj .= "<a href=\"$base$href\">$name</a>";
+            $docum   .= "<a href=\"$base$href\">$name</a>";
+            $documli .= "<a href=\"$base$href\">$name</a>";
+            
+            s!<cite>$name</cite>!<a href="$base$href">$name</a>!gs;
         }
 
-        $inj .= "<br />";
+        $documli .= "</li>\n";
+
+        $docum .= " &nbsp;&nbsp; ";
     }
 
-    $inj .= "</blockquote>\n";
-    $inj .= "</div>\n";
 
-$inj .= "</div>\n";
 
-s/(<body[^>]*>)/$1\n$inj/;
+
+my $css     = do { open my $fh, '<', 'nginx-perl.in/style.css'; <$fh> };
+my $podpre  = do { open my $fh, '<', 'nginx-perl.in/podpre.html'; <$fh> };
+my $podpost = do { open my $fh, '<', 'nginx-perl.in/podpost.html'; <$fh> };
+
+my $style = <<"END";
+<style type="text/css"><!--
+$css
+--></style>
+END
+
+if ($item eq 'Home') {
+    $podpre = 
+    $podpost = '';
+}
+
+s/(<body[^>]*>)/$style\n$1\n$podpre/;
+s/>Index</>$item</;
+s/(<\/body[^>]*>)/$podpost\n$1/;
+
+s/%% DOCUM %%/$docum/g;
+s/%% DOCUMLI %%/$documli/g;
+s/%% BASE %%/$base/g;
 
 print;
 

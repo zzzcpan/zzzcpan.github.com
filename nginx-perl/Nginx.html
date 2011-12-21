@@ -6,23 +6,107 @@
 	<meta name="description" content="Pod documentation for Nginx" />
 	<meta name="inputfile" content="&lt;standard input&gt;" />
 	<meta name="outputfile" content="&lt;standard output&gt;" />
-	<meta name="created" content="Mon Dec  5 00:36:39 2011" />
+	<meta name="created" content="Thu Dec 22 00:47:23 2011" />
 	<meta name="generator" content="Pod::Xhtml 1.61" />
-<link rel="stylesheet" href="pod.css"/></head>
+</head>
+<style type="text/css"><!--
+
+body { color: #000000; background: #ffffff; min-width: 750px; }
+
+body,div { margin: 0; padding: 0;}
+
+/* layout */
+
+div.row { width: 100%; clear: both; margin: 0; padding: 0; }
+
+div.w100 { width: 40em; }
+div.w80 { width: 35em; }
+
+div.centr { margin: 0 auto; }
+
+div.pagepadtop { padding-top: 80px; }
+div.pagepadbottom { padding-bottom: 80px; }
+div.blockpadtop { padding-top: 10px; }
+div.blockpadbottom { padding-bottom: 20px; }
+
+div.cl { clear: both; }
+div.fl { float: left; }
+div.fr { float: right; }
+div.ab { position: absolute; }
+div.rl { position: relative; }
+
+div.ph { height: 1px; line-height: 1px; overflow: hidden; } /* placeholder */
+
+
+/* special, shifting logo a bit left */
+
+div.hlogo { height: 42px; }
+div.m2 { margin-left: -2px; }
+div.hlogos { height: 29px; }
+div.m1 { margin-left: -1px; }
+
+/* links, nv class to avoid highlighting visited links */
+
+a.nv:visited { color: #007a03; }
+a.nv:focus, a.nv:hover { color: #f54b00; }
+a { color: #007a03; }
+a:visited { color: #990099; }
+a:focus, a:hover { color: #f54b00; }
+
+
+
+/* text */
+
+h1 { font-size: 196%;   font-weight: normal; font-style: normal; }
+h2 { font-size: 167%;   font-weight: normal; font-style: normal; }
+h3 { font-size: 146.5%; font-weight: normal; font-style: normal; }
+h4 { font-size: 123.1%; font-weight: normal; font-style: normal; }
+h5 { font-size: 108%;   font-weight: bold;   font-style: normal; }
+h6 { font-size: 108%;   font-weight: normal; font-style: italic; }
+
+h1,h2,h3,h4,h5,h6,p,div,ul,li,a,span,b,strong,i { font-family: "Times New Roman", Times; }
+a,span,b,strong,i { margin: 0; padding: 0; }
+h1,h2,h3,h4,h5,h6,p { padding: 0.5em 0 0.5em 0; }
+p { line-height: 1.3em } 
+p { margin: 0 0 -0em 0; }
+h1,h2 { margin: 0.4em 0 -0.4em 0;  }
+h3,h4,h5,h6 { margin: 0.6em 0 -0.6em 0;  }
+
+ul.nls { list-style: none; }
+
+div.pod div { padding: 0 1.7em; }
+div.pod ul { list-style: none; }
+
+
+--></style>
+
 <body>
-<div class="top">
-<h1>nginx-perl</h1>
-<div class="item"><a href="index.html">Home</a></div>
-<div class="item">
-Documentation:<br />
-<blockquote>
-<b>Nginx</b><br /><a href="Nginx/Util.html">Nginx::Util</a><br /><a href="Nginx/Redis.html">Nginx::Redis</a><br /></blockquote>
-</div>
-</div>
+
+<div class="row">
+
+	<div class="w100 centr cl pagepadtop blockpadbottom rl hlogos">
+		<div class="ab m2 hlogos">
+			<a href="index.html" title="nginx-perl"><img 
+				src="nginx-perl.gif" border="0"
+				alt="nginx-perl" /></a>
+		</div>
+	</div>
+
+	<div class="w100 centr cl blockpadbottom">
+
+		<h3>Documentation</h3>
+
+		<p><b>Nginx</b> &nbsp;&nbsp; <a href="Nginx/Test.html">Nginx::Test</a> &nbsp;&nbsp; <a href="Nginx/Util.html">Nginx::Util</a> &nbsp;&nbsp; <a href="Nginx/Redis.html">Nginx::Redis</a> &nbsp;&nbsp; <a href="Redis/Parser/XS.html">Redis::Parser::XS</a> &nbsp;&nbsp; <a href="Nginx/Perl.html">Nginx::Perl</a> &nbsp;&nbsp; </p>
+	</div>
+
+	<div class="w100 centr cl blockpadtop blockpadbottom">
+
+
+
 
 <div class="pod">
 <!-- INDEX START -->
-<h3 id="TOP">Index</h3>
+<h3 id="TOP">Nginx</h3>
 
 <ul><li><a href="#NAME">NAME</a></li>
 <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
@@ -58,6 +142,116 @@ Documentation:<br />
 </div>
 <h1 id="SYNOPSIS">SYNOPSIS</h1>
 <div id="SYNOPSIS_CONTENT">
+<pre>    use Nginx;
+
+    # nginx's asynchronous resolver
+    #     &quot;resolver 1.2.3.4;&quot; in nginx-perl.conf
+
+    ngx_resolver &quot;www.google.com&quot;, 15, sub {
+        my (@IPs) = @_;
+
+        if ($!) {
+            my ($errcode, $errstr) = @_;
+            ngx_log_error $!, &quot;Cannot resolve google's IP: $errstr&quot;;
+        }
+    };
+
+    # timer
+
+    ngx_timer 5, 0, sub {
+        ngx_log_notice 0, &quot;5 seconds gone&quot;;
+    };
+
+    # asynchronous connections
+    # with explicit flow control
+
+    ngx_connector &quot;1.2.3.4&quot;, 80, 15, sub {
+        if ($!) {
+            ngx_log_error $!, &quot;Connect error: $!&quot;;
+            return NGX_CLOSE;
+        }
+
+        my $c = shift;  # connection
+        my $wbuf = &quot;GET /\x0d\x0a&quot;;
+        my $rbuf;
+
+        ngx_writer $c, $wbuf, 15, sub {
+            if ($!) {
+                ngx_log_error $!, &quot;Write error: $!&quot;;
+                return NGX_CLOSE;
+            }
+
+            return NGX_READ;
+        };
+
+        ngx_reader $c, $rbuf, 0, 0, 15, sub {
+            if ($! &amp;&amp; $! != NGX_EOF) { 
+                ngx_log_error $!, &quot;Read error: $!&quot;;
+                return NGX_CLOSE;
+            }
+
+            if ($! == NGX_EOF) {
+                ngx_log_info 0, &quot;response length: &quot; . length ($rbuf);
+                return NGX_CLOSE;
+            }
+
+            return NGX_READ;  # no errors - read again
+        };
+
+        return NGX_WRITE;  # what to do on connect
+    };
+
+    # SSL handshake
+
+    ngx_connector &quot;1.2.3.4&quot;, 80, 15, sub {
+        ...
+        my $c = shift;
+
+        ngx_ssl_handshaker $c, 15, sub {
+            ...
+            ngx_writer $c, $wbuf, 15, sub {
+                ...
+            };
+
+            ngx_reader $c, $rbuf, 0, 0, 15, sub {
+                ...
+            };
+
+            return NGX_WRITE;
+        };
+
+        return NGX_SSL_HANDSHAKER;
+    };
+
+    # asynchronous response
+    # via HTTP API
+
+    sub handler {
+        my ($r) = shift;
+
+        $r-&gt;main_count_inc;
+
+        ngx_resolver &quot;www.google.com&quot;, 15, sub {
+
+            $r-&gt;send_http_header ('text/html');
+
+            unless ($!) {
+                lcoal $, = ', ';
+                $r-&gt;print (&quot;OK, @_\n&quot;);
+            } else {
+                $r-&gt;print (&quot;FAILED, $_[1]\n&quot;);
+            }
+
+            $r-&gt;send_special (NGX_HTTP_LAST);
+            $r-&gt;finalize_request (NGX_OK);
+        };
+
+        return NGX_DONE;
+    }
+
+    # and more... 
+
+</pre>
 <p><cite>nginx-perl.conf</cite>:</p>
 <pre>    http {
 
@@ -69,17 +263,11 @@ Documentation:<br />
         perl_exit_worker  My::App::exit_worker;
 
         perl_eval  '$My::App::SOME_VAR = &quot;foo&quot;';
-
         ...
 
         server {
             location / {
                 perl_handler  My::App::handler;
-        ...
-
-        server {
-            location / {
-                perl_app  app.pl;
         ...
 
 </pre>
@@ -90,29 +278,9 @@ Documentation:<br />
 
     sub handler {
         my $r = shift;
-
-        $r-&gt;main_count_inc;
-
-        ngx_timer 1, 0, sub {
-            $r-&gt;send_http_header('text/html');
-            $r-&gt;print(&quot;OK\n&quot;);
-
-            $r-&gt;send_special(NGX_HTTP_LAST);
-            $r-&gt;finalize_request(NGX_OK);
-        };
-
-        return NGX_DONE;
-    }
-
-</pre>
-<p><cite>app.pl</cite>:</p>
-<pre>    use Nginx;
-
-    sub {
-        my $r = shift;
-
         ...
-    };
+    }
+    ...
 
 </pre>
 
@@ -120,21 +288,8 @@ Documentation:<br />
 <h1 id="DESCRIPTION">DESCRIPTION</h1>
 <div id="DESCRIPTION_CONTENT">
 <p>Nginx with capital <i>N</i> is a part of <strong>nginx-perl</strong> distribution.</p>
-<p>nginx-perl is aimed to support asynchronous functions for embedded perl
-along with other little features to make it nice and usable perl web server.</p>
-<p>Currently includes:</p>
-<pre>    - official old perl API;
-    - asynchronous connections (ngx_connector, ngx_reader, ngx_writer);
-    - timer (ngx_timer);
-    - SSL without cached sessions (ngx_ssl_handshaker);
-    - simple resolver (ngx_resolver);
-    - access handlers (perl_access);
-    - app handlers (perl_app);
-    - configuration level eval (perl_eval);
-    - init_worker handlers (perl_init_worker);
-    - client connection takeover for websockets, etc;
-
-</pre>
+<p>Nginx-perl brings asynchronous functions and other useful features 
+into embedded perl to turn it into nice and powerful perl web server.</p>
 
 </div>
 <h1 id="RATIONALE">RATIONALE</h1>
@@ -163,21 +318,25 @@ complexity as much as possible. </p>
 </div>
 <h1 id="INSTALLATION">INSTALLATION</h1>
 <div id="INSTALLATION_CONTENT">
-<p>In this distribution perl is enabled by default, 
-so just <cite>./configure</cite> should work.</p>
-<p>But to build with different perl and SSL support use something like:</p>
-<pre>    % ./configure \
-         --with-http_ssl_module \
-         --with-perl=/home/you/perl5/perlbrew/perls/perl-5.14.2/bin/perl
+<p>As usual for perl extensions:</p>
+<pre>    % perl Makefile.PL
     % make
+    % make test
+    % make install
 
 </pre>
-<p>nginx-perl can be installed alongside nginx. It uses 
-capital <strong>N</strong> for perl modules and <cite>nginx-perl</cite> for binaries.
-So, it is safe to do:</p>
-<pre>    % make install
+<p><cite>Makefile.PL</cite> supports everything <cite>./configure</cite> does. 
+To build it with SSL support use something like:</p>
+<pre>    % perl Makefile.PL --with-http_ssl_module
 
 </pre>
+<p>Or if you want to install it into different perl simply run <cite>Makefile.PL</cite>
+undef it:</p>
+<pre>    % /home/zzz/perl5/perlbrew/perls/perl-5.14.2/bin/perl Makefile.PL
+
+</pre>
+<p>It is safe to install nginx-perl alongside nginx. It uses 
+capital <strong>N</strong> for perl modules and <cite>nginx-perl</cite> for binaries.</p>
 
 </div>
 <h1 id="RUNNING_EXAMPLES">RUNNING EXAMPLES</h1>
@@ -195,7 +354,7 @@ http://127.0.0.1:55555/ or whatever IP you're on.</p>
 <div id="BENCHMARKING_CONTENT">
 <p>The easiest way to benchmark nginx-perl against node.js is to run
 redis example from <cite>eg/redis</cite>, <cite>eg/redis.js</cite> and compare the results. 
-But first you need to install <cite>Redis::Parser::XS</cite> from cpan:</p>
+But first you need to install <a href="Redis/Parser/XS.html">Redis::Parser::XS</a> from cpan:</p>
 <pre>    % cpan Redis::Parser::XS
     ...
     % ./objs/nginx-perl -p eg/redis
@@ -565,10 +724,9 @@ NGX_EOF in case of EOF. </p>
         return NGX_WRITE;
     };
 
-
-
-
 </pre>
+		<p>Be aware, that <code>$min</code> and <code>$max</code> doesn't apply to the amount of data
+you want to read but rather to the appropriate buffer size to call back with.</p>
 	</dd>
 	<dt>ngx_writer $connection, $buf, $timeout, sub { };</dt>
 	<dd>
@@ -599,7 +757,7 @@ treated as fatal error here. </p>
 
 </pre>
 	</dd>
-	<dt>ngx_ssl_handshaker $connection, sub { };</dt>
+	<dt>ngx_ssl_handshaker $connection, $timeout, sub { };</dt>
 	<dd>
 		<p>Creates its own internal handler for both reading and writing and tries 
 to do SSL handshake. </p>
@@ -621,7 +779,7 @@ reader and writer, so you have to create new ones.</p>
 
         my $c = shift;
 
-        ngx_ssl_handshaker $c, sub {
+        ngx_ssl_handshaker $c, 15, sub {
 
             return NGX_CLOSE
                 if $!;
@@ -647,24 +805,36 @@ reader and writer, so you have to create new ones.</p>
 		<p>Creates resolver's handler and tries to resolve <code>$name</code> in <code>$timeout</code>
 seconds using resolver specified in <cite>nginx-perl.conf</cite>.</p>
 		<p>On success returns all resolved IP addresses into <code>@_</code>.</p>
-		<p>On error calls back with <code>$!</code> set to some value. </p>
+		<p>On error calls back with <code>$!</code> set to some value, $_[0] set to one of the
+resolver-specific error constants and with textual explanation in $_[1]:</p>
+<pre>    NGX_RESOLVE_FORMERR
+    NGX_RESOLVE_SERVFAIL
+    NGX_RESOLVE_NXDOMAIN
+    NGX_RESOLVE_NOTIMP
+    NGX_RESOLVE_REFUSED
+    NGX_RESOLVE_TIMEDOUT
+
+</pre>
 		<p>This is a thin wrapper around nginx's internal resolver.
 All its current problems apply. To use it in production you'll need
 a local resolver, like named that does actual resolving.</p>
 <pre>    ngx_resolver $host, $timeout, sub {
-        retrun
-            if $!;
 
-        warn join(', ', @_).&quot;\n&quot;;
+        if ($!) {
+            my $errcode = $_[0];
+            my $errstr  = $_[1];
 
+            warn &quot;failed to resolve $host: $errstr\n&quot;;
+            ...
+
+            return;
+        }
+
+        my @IPs = @_; # list of all resolved IP addresses
         ...
     };
 
 </pre>
-		<p>IMPORTANT</p>
-		<p>This wrapper is a bit too thin and currently lacks additional timer 
-to cancel name resolution on timeout. This is going to be fixed 
-before first official release.</p>
 	</dd>
 </dl>
 
@@ -832,7 +1002,8 @@ from <cite>nginx-perl.conf</cite>:</p>
 </div>
 <h1 id="SEE_ALSO">SEE ALSO</h1>
 <div id="SEE_ALSO_CONTENT">
-<p><cite>Nginx::Util</cite>,
+<p><a href="Nginx/Test.html">Nginx::Test</a>, <a href="Nginx/Util.html">Nginx::Util</a>, <a href="Nginx/Redis.html">Nginx::Redis</a>,
+<a href="http://zzzcpan.github.com/nginx-perl">http://zzzcpan.github.com/nginx-perl</a>,
 <a href="http://wiki.nginx.org/EmbeddedPerlModule">http://wiki.nginx.org/EmbeddedPerlModule</a>,
 <a href="http://nginx.net/">http://nginx.net/</a> </p>
 
@@ -851,5 +1022,14 @@ Alexandr Gomoliako &lt;zzz@zzz.org.ua&gt;</p>
 under the same terms as <strong>nginx</strong> itself.</p>
 
 </div>
-</div></body>
+</div>
+	</div>
+
+	<div class="w100 centr cl blockpadtop pagepadbottom">
+		<p>&copy; 2011 Alexandr Gomoliako</p>
+	</div>
+</div>
+
+
+</body>
 </html>
