@@ -6,7 +6,7 @@
 	<meta name="description" content="Pod documentation for Redis::Parser::XS" />
 	<meta name="inputfile" content="&lt;standard input&gt;" />
 	<meta name="outputfile" content="&lt;standard output&gt;" />
-	<meta name="created" content="Thu Dec 22 00:43:26 2011" />
+	<meta name="created" content="Sat Dec 24 00:27:36 2011" />
 	<meta name="generator" content="Pod::Xhtml 1.61" />
 </head>
 <style type="text/css"><!--
@@ -199,9 +199,10 @@ indicates, that there isn't enough data to parse even one message.</p>
                                        #
         ['*', undef                ],  # *-1     CRLF
                                        #
-        ['*', ['foo', ... ]        ],  # *2      CRLF 
-                                       # $3      CRLF
-                                       # foo     CRLF
+        ['*', [ 'foo',                 # *2      CRLF 
+                ['+', 'OK'],           # $3      CRLF
+                 ...         ]         # foo     CRLF
+                                       # +OK     CRLF
                                        # ...
                                        #
         ['*', ['foo', undef ]      ],  # *2      CRLF 
