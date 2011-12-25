@@ -6,7 +6,7 @@
 	<meta name="description" content="Pod documentation for Nginx" />
 	<meta name="inputfile" content="&lt;standard input&gt;" />
 	<meta name="outputfile" content="&lt;standard output&gt;" />
-	<meta name="created" content="Fri Dec 23 01:49:51 2011" />
+	<meta name="created" content="Sun Dec 25 04:38:51 2011" />
 	<meta name="generator" content="Pod::Xhtml 1.61" />
 </head>
 <style type="text/css"><!--
@@ -116,6 +116,7 @@ div.pod ul { list-style: none; }
 <li><a href="#RUNNING_EXAMPLES">RUNNING EXAMPLES</a></li>
 <li><a href="#BENCHMARKING">BENCHMARKING</a></li>
 <li><a href="#CONFIGURATION_DIRECTIVES">CONFIGURATION DIRECTIVES</a></li>
+<li><a href="#INTERNAL_FUNCTIONS">INTERNAL FUNCTIONS</a></li>
 <li><a href="#NAMING">NAMING</a></li>
 <li><a href="#HTTP_REQUEST_OBJECT">HTTP REQUEST OBJECT</a></li>
 <li><a href="#HTTP_CONTENT_HANDLER">HTTP CONTENT HANDLER</a></li>
@@ -472,6 +473,44 @@ Which means there is no need to call $r-&gt;has_request_body there.</p>
         server {
             location / {
                 perl_app  /path/to/app.pl;
+
+</pre>
+	</dd>
+</dl>
+
+</div>
+<h1 id="INTERNAL_FUNCTIONS">INTERNAL FUNCTIONS</h1>
+<div id="INTERNAL_FUNCTIONS_CONTENT">
+<dl>
+	<dt>$uri = ngx_escape_uri $src_uri, $type;</dt>
+	<dt>$uri = ngx_escape_uri $src_uri;</dt>
+	<dd>
+		<p>Escapes <code>$src_uri</code> using internal <code>ngx_escape_uri</code> function from 
+<cite>src/core/ngx_string.c</cite>. If <code>$type</code> is specified, uses it or 
+NGX_ESCAPE_URI otherwise.</p>
+<pre>    my $foo = ngx_escape_uri 'a b';
+      # gives 'a%20b'
+
+    my $foo = ngx_escape_uri 'a b', NGX_ESCAPE_URI;
+
+</pre>
+		<p>Type defines what characters to escape. </p>
+<pre>    NGX_ESCAPE_URI                &quot; &quot;, &quot;#&quot;, &quot;%&quot;, &quot;?&quot;, 
+                                  %00-%1F, %7F-%FF
+
+    NGX_ESCAPE_ARGS               &quot; &quot;, &quot;#&quot;, &quot;%&quot;, &quot;&amp;&quot;, &quot;+&quot;, &quot;?&quot;, 
+                                  %00-%1F, %7F-%FF 
+
+    NGX_ESCAPE_URI_COMPONENT      everything except: 
+                                   ALPHA, DIGIT, &quot;-&quot;, &quot;.&quot;, &quot;_&quot;, &quot;~&quot;
+
+    NGX_ESCAPE_HTML               &quot; &quot;, &quot;#&quot;, &quot;&quot;&quot;, &quot;%&quot;, &quot;'&quot;, 
+                                  %00-%1F, %7F-%FF
+
+    NGX_ESCAPE_REFRESH            &quot; &quot;, &quot;&quot;&quot;, &quot;%&quot;, &quot;'&quot;, 
+                                  %00-%1F, %7F-%FF
+
+    NGX_ESCAPE_MEMCACHED          &quot; &quot;, &quot;%&quot;, %00-%1F
 
 </pre>
 	</dd>
