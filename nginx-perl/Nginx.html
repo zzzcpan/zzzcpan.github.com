@@ -6,7 +6,7 @@
 	<meta name="description" content="Pod documentation for Nginx" />
 	<meta name="inputfile" content="&lt;standard input&gt;" />
 	<meta name="outputfile" content="&lt;standard output&gt;" />
-	<meta name="created" content="Sun Dec 25 04:38:51 2011" />
+	<meta name="created" content="Tue Dec 27 06:41:33 2011" />
 	<meta name="generator" content="Pod::Xhtml 1.61" />
 </head>
 <style type="text/css"><!--
@@ -602,7 +602,92 @@ because it allows to avoid post processing response the old way.</p>
 </div>
 <h1 id="HTTP_ACCESS_HANDLER">HTTP ACCESS HANDLER</h1>
 <div id="HTTP_ACCESS_HANDLER_CONTENT">
-<p>todo</p>
+<p>Access handler is a perfect place for access control. Return <code>NGX_OK</code>
+to allow access or some HTTP error to deny:</p>
+<pre>    sub access_handler {
+        my ($r) = @_;
+
+        if ($r-&gt;uri eq '/private') {
+            return 403;
+        }
+
+        return NGX_OK;
+    }
+
+</pre>
+<p>It is also possible to do something asynchronously, as with content handler,
+but a bit differently. On success we have to pass request to the next
+phase handler but finalize it on error. As before, <code>NGX_DONE</code> means 
+that we are going to process request ourselves. So, let's rewrite first 
+example but make it suitable for asynchronous execution:</p>
+<pre>    sub access_handler {
+        my ($r) = @_;
+
+        if ($r-&gt;uri eq '/private') {
+            $r-&gt;finazlie_request(403);
+            return NGX_DONE;
+        }
+
+        $r-&gt;phase_handler_inc;
+        $r-&gt;core_run_phases;
+        return NGX_DONE;
+    }
+
+</pre>
+<p>Now it is possible to use timer or redis client or any other asynchronous
+function:</p>
+<pre>    sub access_handler {
+        my ($r) = @_;
+
+        ngx_timer 1, 0, sub {
+
+            if ($r-&gt;uri eq '/private') {
+                $r-&gt;finalize_request(403);
+                return;
+            } 
+
+            $r-&gt;phase_handler_inc;
+            $r-&gt;core_run_phases;
+        };
+
+        return NGX_DONE;
+    }
+
+</pre>
+<p>One of the interesting things you can do with it is putting username into 
+internal variable:</p>
+<pre>    sub access_handler {
+        my ($r) = @_;
+
+        ngx_timer 1, 0, sub {
+
+            $r-&gt;variable(&quot;my_username&quot;, &quot;foobar&quot;);
+
+            $r-&gt;phase_handler_inc;
+            $r-&gt;core_run_phases;
+        };
+
+        return NGX_DONE;
+    }
+
+</pre>
+<p>It allows you to pass this variable to the upstream as a header
+or use it in any other way in configuration:</p>
+<pre>    server {
+        set $my_username &quot;guest&quot;;
+
+        location / {
+            perl_access  Foo::access_handler;
+
+            proxy_pass        http://1.2.3.4:5678; 
+            proxy_set_header  X-My-Username  $my_username;
+        }
+    }
+
+</pre>
+<p>Be aware that nginx might call access handler more than once depending
+on your configuration. And if you are using redis for this you should
+consider caching reply even for a little time.</p>
 
 </div>
 <h1 id="FLOW_CONTROL">FLOW CONTROL</h1>
