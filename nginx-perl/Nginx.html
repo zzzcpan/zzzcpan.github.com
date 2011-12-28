@@ -6,7 +6,7 @@
 	<meta name="description" content="Pod documentation for Nginx" />
 	<meta name="inputfile" content="&lt;standard input&gt;" />
 	<meta name="outputfile" content="&lt;standard output&gt;" />
-	<meta name="created" content="Wed Dec 28 19:54:26 2011" />
+	<meta name="created" content="Wed Dec 28 21:55:08 2011" />
 	<meta name="generator" content="Pod::Xhtml 1.61" />
 </head>
 <style type="text/css"><!--
@@ -116,7 +116,6 @@ div.pod ul { list-style: none; }
 <li><a href="#RUNNING_EXAMPLES">RUNNING EXAMPLES</a></li>
 <li><a href="#BENCHMARKING">BENCHMARKING</a></li>
 <li><a href="#CONFIGURATION_DIRECTIVES">CONFIGURATION DIRECTIVES</a></li>
-<li><a href="#NAMING">NAMING</a></li>
 <li><a href="#INTERNAL_FUNCTIONS">INTERNAL FUNCTIONS</a>
 <ul>
 <li>
@@ -164,11 +163,11 @@ div.pod ul { list-style: none; }
 </li>
 </ul>
 </li>
+<li><a href="#ASYNCHRONOUS_API">ASYNCHRONOUS API</a>
+<ul><li><a href="#NAMING">NAMING</a></li>
 <li><a href="#FLOW_CONTROL">FLOW CONTROL</a></li>
 <li><a href="#ERROR_HANDLING">ERROR HANDLING</a></li>
-<li><a href="#ASYNCHRONOUS_API">ASYNCHRONOUS API</a>
-<ul>
-<li>
+<li><a href="#FUNCTIONS">FUNCTIONS</a>
 <ul><li><a href="#code_ngx_timer_after_repeat_sub_code"><code>ngx_timer $after, $repeat, sub { };</code></a></li>
 <li><a href="#code_ngx_connector_ip_port_timeout_s"><code>ngx_connector $ip, $port, $timeout, sub { };</code></a></li>
 <li><a href="#code_ngx_reader_c_buf_min_max_timeou"><code>ngx_reader $c, $buf, $min, $max, $timeout, sub { };</code></a></li>
@@ -540,21 +539,6 @@ Which means there is no need to call $r-&gt;has_request_body there.</p>
 </pre>
 	</dd>
 </dl>
-
-</div>
-<h1 id="NAMING">NAMING</h1>
-<div id="NAMING_CONTENT">
-<pre>    NGX_FOO_BAR  -- constants
-    ngx_*r       -- asynchronous functions (creators)
-    NGX_VERB     -- flow control constants 
-    ngx_verb     -- flow control functions
-    $r-&gt;foo_bar  -- request object's methods
-
-</pre>
-<p>Each asynchronous function has an <strong>r</strong> at the end of its name. This is 
-because those functions are creators of handlers with some parameters. 
-E.g. ngx_writer creates write handler for some connection with some
-scalar as a buffer.</p>
 
 </div>
 <h1 id="INTERNAL_FUNCTIONS">INTERNAL FUNCTIONS</h1>
@@ -954,7 +938,26 @@ to send response asynchronously from non-http handlers.</p>
 some other callback.</p>
 
 </div>
-<h1 id="FLOW_CONTROL">FLOW CONTROL</h1>
+<h1 id="ASYNCHRONOUS_API">ASYNCHRONOUS API</h1>
+<div id="ASYNCHRONOUS_API_CONTENT">
+
+</div>
+<h2 id="NAMING">NAMING</h2>
+<div id="NAMING_CONTENT">
+<pre>    NGX_FOO_BAR  -- constants
+    ngx_*r       -- asynchronous functions (creators)
+    NGX_VERB     -- flow control constants 
+    ngx_verb     -- flow control functions
+    $r-&gt;foo_bar  -- request object's methods
+
+</pre>
+<p>Each asynchronous function has an <strong>r</strong> at the end of its name. This is 
+because those functions are creators of handlers with some parameters. 
+E.g. ngx_writer creates write handler for some connection with some
+scalar as a buffer.</p>
+
+</div>
+<h2 id="FLOW_CONTROL">FLOW CONTROL</h2>
 <div id="FLOW_CONTROL_CONTENT">
 <p>To specify what to do after each callback we can either call some 
 function or return some value and let handler do it for us. 
@@ -1003,13 +1006,10 @@ to create reader and <code>return NGX_READ</code> from connector's callback:</p>
 
     ngx_read($c);
 
-
-
-
 </pre>
 
 </div>
-<h1 id="ERROR_HANDLING">ERROR HANDLING</h1>
+<h2 id="ERROR_HANDLING">ERROR HANDLING</h2>
 <div id="ERROR_HANDLING_CONTENT">
 <p>Each ngx_* handler will call back on any error with <code>$!</code> set to some value
 and reset to 0 otherwise. 
@@ -1029,8 +1029,8 @@ to NGX_EOF in such case. </p>
 </pre>
 
 </div>
-<h1 id="ASYNCHRONOUS_API">ASYNCHRONOUS API</h1>
-<div id="ASYNCHRONOUS_API_CONTENT">
+<h2 id="FUNCTIONS">FUNCTIONS</h2>
+<div id="FUNCTIONS_CONTENT">
 
 </div>
 <h3 id="code_ngx_timer_after_repeat_sub_code"><code>ngx_timer $after, $repeat, sub { };</code></h3>
