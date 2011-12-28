@@ -6,7 +6,7 @@
 	<meta name="description" content="Pod documentation for Nginx::Test" />
 	<meta name="inputfile" content="&lt;standard input&gt;" />
 	<meta name="outputfile" content="&lt;standard output&gt;" />
-	<meta name="created" content="Thu Dec 22 03:58:42 2011" />
+	<meta name="created" content="Wed Dec 28 20:16:29 2011" />
 	<meta name="generator" content="Pod::Xhtml 1.61" />
 </head>
 <style type="text/css"><!--
@@ -112,7 +112,23 @@ div.pod ul { list-style: none; }
 <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
 <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
 <li><a href="#EXPORT">EXPORT</a></li>
-<li><a href="#FUNCTIONS">FUNCTIONS</a></li>
+<li><a href="#FUNCTIONS">FUNCTIONS</a>
+<ul>
+<li>
+<ul><li><a href="#code_nginx_find_nginx_perl_code"><code>$nginx = find_nginx_perl ();</code></a></li>
+<li><a href="#code_CONFARGS_get_nginx_conf_args_di"><code>%CONFARGS = get_nginx_conf_args_dir $nginx;</code></a></li>
+<li><a href="#code_port_get_unused_port_code"><code>$port = get_unused_port ();</code></a></li>
+<li><a href="#code_rv_wait_for_peer_quot_host_port"><code>$rv = wait_for_peer &quot;$host:$port&quot;, $timeout;</code></a></li>
+<li><a href="#code_prepare_nginx_dir_die_dir_conf_"><code>prepare_nginx_dir_die $dir, $conf, $package1, $package2, ...;</code></a></li>
+<li><a href="#code_text_cat_nginx_logs_dir_code"><code>$text = cat_nginx_logs $dir;</code></a></li>
+<li><a href="#code_child_fork_nginx_die_nginx_dir_"><code>$child = fork_nginx_die $nginx, $dir;</code></a></li>
+<li><a href="#code_child_fork_child_die_sub_code"><code>$child = fork_child_die sub { ... };</code></a></li>
+<li><a href="#code_child_peer_fork_nginx_handler_d"><code>($child, $peer) = fork_nginx_handler_dir $nginx, $dir, $conf, $code;</code></a></li>
+<li><a href="#code_body_headers_http_get_peer_uri_"><code>($body, $headers) = http_get $peer, $uri, $timeout;</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a href="#AUTHOR">AUTHOR</a></li>
 <li><a href="#LICENSE">LICENSE</a>
 </li>
@@ -179,41 +195,46 @@ as a dependency for you module and use.</p>
 </div>
 <h1 id="FUNCTIONS">FUNCTIONS</h1>
 <div id="FUNCTIONS_CONTENT">
-<dl>
-	<dt>$nginx = find_nginx_perl ();</dt>
-	<dd>
-		<p>Finds executable <cite>nginx-perl</cite> binary to run. Returns <code>undef</code> if
+
+</div>
+<h3 id="code_nginx_find_nginx_perl_code"><code>$nginx = find_nginx_perl ();</code></h3>
+<div id="code_nginx_find_nginx_perl_code_CONT">
+<p>Finds executable <cite>nginx-perl</cite> binary to run. Returns <code>undef</code> if
 can't find any or executable path otherwise. </p>
 <pre>    $nginx = './objs/nginx-perl'
 
 </pre>
-	</dd>
-	<dt>%CONFARGS = get_nginx_conf_args_dir $nginx;</dt>
-	<dd>
-		<p>Runs <code>nginx-perl -V</code> and parses its output to produce set
+
+</div>
+<h3 id="code_CONFARGS_get_nginx_conf_args_di"><code>%CONFARGS = get_nginx_conf_args_dir $nginx;</code></h3>
+<div id="code_CONFARGS_get_nginx_conf_args_di-2">
+<p>Runs <code>nginx-perl -V</code> and parses its output to produce set
 of keys out of the list of configure arguments:</p>
 <pre>    %CONFARGS = ( '--with-http_ssl_module' =&gt; 1,
                   '--with-...'             =&gt; 1  )
 
 </pre>
-	</dd>
-	<dt>$port = get_unused_port ();</dt>
-	<dd>
-		<p>Gives you available port number to bind to. Tries to use it first.
+
+</div>
+<h3 id="code_port_get_unused_port_code"><code>$port = get_unused_port ();</code></h3>
+<div id="code_port_get_unused_port_code_CONTE">
+<p>Gives you available port number to bind to. Tries to use it first.
 Returns undef on error.</p>
-	</dd>
-	<dt>$rv = wait_for_peer &quot;$host:$port&quot;, $timeout;</dt>
-	<dd>
-		<p>Tries to connect to <code>$host:$port</code> within $timeout. Returns <code>1</code>
+
+</div>
+<h3 id="code_rv_wait_for_peer_quot_host_port"><code>$rv = wait_for_peer &quot;$host:$port&quot;, $timeout;</code></h3>
+<div id="code_rv_wait_for_peer_quot_host_port-2">
+<p>Tries to connect to <code>$host:$port</code> within $timeout. Returns <code>1</code>
 on success and <code>undef</code> on error.</p>
 <pre>    wait_for_peer &quot;127.0.0.1:1234&quot;, 2
         or ...;
 
 </pre>
-	</dd>
-	<dt>prepare_nginx_dir_die $dir, $conf, $package1, $package2, ...;</dt>
-	<dd>
-		<p>Creates directory tree suitable to run <cite>nginx-perl</cite> from. Puts there 
+
+</div>
+<h3 id="code_prepare_nginx_dir_die_dir_conf_"><code>prepare_nginx_dir_die $dir, $conf, $package1, $package2, ...;</code></h3>
+<div id="code_prepare_nginx_dir_die_dir_conf_-2">
+<p>Creates directory tree suitable to run <cite>nginx-perl</cite> from. Puts there 
 config and packages specified as string scalars. Dies on errors.</p>
 <pre>    prepare_nginx_dir_die &quot;tmp/foo&quot;, &lt;&lt;'ENDCONF', &lt;&lt;'ENDONETWO';
 
@@ -242,10 +263,11 @@ config and packages specified as string scalars. Dies on errors.</p>
     ENDONETWO
 
 </pre>
-	</dd>
-	<dt>$text = cat_nginx_logs $dir;</dt>
-	<dd>
-		<p>Scans <code>$dir</code> for logs and concatenates them into a single scalar.
+
+</div>
+<h3 id="code_text_cat_nginx_logs_dir_code"><code>$text = cat_nginx_logs $dir;</code></h3>
+<div id="code_text_cat_nginx_logs_dir_code_CO">
+<p>Scans <code>$dir</code> for logs and concatenates them into a single scalar.
 Useful for diagnostics.</p>
 <pre>    prepate_nginx_dir_dir $dir, ... 
     ...
@@ -254,10 +276,11 @@ Useful for diagnostics.</p>
         or diag cat_nginx_logs $dir;
 
 </pre>
-	</dd>
-	<dt>$child = fork_nginx_die $nginx, $dir;</dt>
-	<dd>
-		<p>Forks <cite>nginx-perl</cite> using executable binary from <code>$nginx</code> and 
+
+</div>
+<h3 id="code_child_fork_nginx_die_nginx_dir_"><code>$child = fork_nginx_die $nginx, $dir;</code></h3>
+<div id="code_child_fork_nginx_die_nginx_dir_-2">
+<p>Forks <cite>nginx-perl</cite> using executable binary from <code>$nginx</code> and 
 prepared directory path from <code>$dir</code>. Dies on errors.
 Internally does something like this: <code>&quot;$nginx -p $dir&quot;</code></p>
 <pre>    my $child = fork_nginx_die $nginx, $dir;
@@ -266,10 +289,11 @@ Internally does something like this: <code>&quot;$nginx -p $dir&quot;</code></p>
     undef $child;
 
 </pre>
-	</dd>
-	<dt>$child = fork_child_die sub { ... };</dt>
-	<dd>
-		<p>Forks sub in a child process. Dies on errors.</p>
+
+</div>
+<h3 id="code_child_fork_child_die_sub_code"><code>$child = fork_child_die sub { ... };</code></h3>
+<div id="code_child_fork_child_die_sub_code_C">
+<p>Forks sub in a child process. Dies on errors.</p>
 <pre>    my $child = fork_child_die sub {
         ...
 
@@ -280,10 +304,11 @@ Internally does something like this: <code>&quot;$nginx -p $dir&quot;</code></p>
     undef $child;
 
 </pre>
-	</dd>
-	<dt>($child, $peer) = fork_nginx_handler_dir $nginx, $dir, $conf, $code;</dt>
-	<dd>
-		<p>Gets unused port, prepares directory for nginx with predefined 
+
+</div>
+<h3 id="code_child_peer_fork_nginx_handler_d"><code>($child, $peer) = fork_nginx_handler_dir $nginx, $dir, $conf, $code;</code></h3>
+<div id="code_child_peer_fork_nginx_handler_d-2">
+<p>Gets unused port, prepares directory for nginx with predefined 
 package name, forks nginx and gives you child object and peer back.
 Allows to inject <code>$conf</code> into config and <code>$code</code> into the package.
 Expects to have <code>sub handler { ... }</code> in the code. Dies on errors.</p>
@@ -308,14 +333,15 @@ Expects to have <code>sub handler { ... }</code> in the code. Dies on errors.</p
     undef $child; 
 
 </pre>
-		<p>Be aware that this function is not suited for every module. It expects 
+<p>Be aware that this function is not suited for every module. It expects 
 <code>$dir</code> to be relative to the current directory or any of its subdirectories,
 i.e. <cite>foo</cite>, <cite>foo/bar</cite>. And also expects <cite>blib/lib</cite> and <cite>blib/arch</cite>
 to contain your libraries, which is where <cite>ExtUtils::MakeMaker</cite> puts them.</p>
-	</dd>
-	<dt>($body, $headers) = http_get $peer, $uri, $timeout;</dt>
-	<dd>
-		<p>Connects to <code>$peer</code>, sends GET request and return <code>$body</code> and <code>$headers</code>.</p>
+
+</div>
+<h3 id="code_body_headers_http_get_peer_uri_"><code>($body, $headers) = http_get $peer, $uri, $timeout;</code></h3>
+<div id="code_body_headers_http_get_peer_uri_-2">
+<p>Connects to <code>$peer</code>, sends GET request and return <code>$body</code> and <code>$headers</code>.</p>
 <pre>    my ($body, $headers) = http_get '127.0.0.1:1234', '/', 2;
 
     $headers = {  _status        =&gt; 200,
@@ -326,8 +352,6 @@ to contain your libraries, which is where <cite>ExtUtils::MakeMaker</cite> puts 
                   ...                               }
 
 </pre>
-	</dd>
-</dl>
 
 </div>
 <h1 id="AUTHOR">AUTHOR</h1>
