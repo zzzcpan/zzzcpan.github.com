@@ -6,7 +6,7 @@
 	<meta name="description" content="Pod documentation for Nginx" />
 	<meta name="inputfile" content="&lt;standard input&gt;" />
 	<meta name="outputfile" content="&lt;standard output&gt;" />
-	<meta name="created" content="Tue Dec 27 06:41:33 2011" />
+	<meta name="created" content="Wed Dec 28 19:54:26 2011" />
 	<meta name="generator" content="Pod::Xhtml 1.61" />
 </head>
 <style type="text/css"><!--
@@ -116,15 +116,78 @@ div.pod ul { list-style: none; }
 <li><a href="#RUNNING_EXAMPLES">RUNNING EXAMPLES</a></li>
 <li><a href="#BENCHMARKING">BENCHMARKING</a></li>
 <li><a href="#CONFIGURATION_DIRECTIVES">CONFIGURATION DIRECTIVES</a></li>
-<li><a href="#INTERNAL_FUNCTIONS">INTERNAL FUNCTIONS</a></li>
 <li><a href="#NAMING">NAMING</a></li>
-<li><a href="#HTTP_REQUEST_OBJECT">HTTP REQUEST OBJECT</a></li>
-<li><a href="#HTTP_CONTENT_HANDLER">HTTP CONTENT HANDLER</a></li>
-<li><a href="#HTTP_ACCESS_HANDLER">HTTP ACCESS HANDLER</a></li>
+<li><a href="#INTERNAL_FUNCTIONS">INTERNAL FUNCTIONS</a>
+<ul>
+<li>
+<ul><li><a href="#code_uri_ngx_escape_uri_src_uri_type"><code>$uri = ngx_escape_uri $src_uri, $type</code>;</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#HTTP_API">HTTP API</a>
+<ul><li><a href="#CONTENT_HANDLER">CONTENT HANDLER</a></li>
+<li><a href="#ACCESS_HANDLER">ACCESS HANDLER</a></li>
+<li><a href="#METHODS">METHODS</a>
+<ul><li><a href="#code_r_gt_status_status_code"><code>$r-&gt;status($status)</code></a></li>
+<li><a href="#code_r_gt_send_http_header_content_t"><code>$r-&gt;send_http_header($content_type)</code></a></li>
+<li><a href="#code_r_gt_header_only_code"><code>$r-&gt;header_only</code></a></li>
+<li><a href="#code_r_gt_uri_code"><code>$r-&gt;uri</code></a></li>
+<li><a href="#code_r_gt_args_code"><code>$r-&gt;args</code></a></li>
+<li><a href="#code_r_gt_request_method_code"><code>$r-&gt;request_method</code></a></li>
+<li><a href="#code_r_gt_remote_addr_code"><code>$r-&gt;remote_addr</code></a></li>
+<li><a href="#code_ctx_r_gt_ctx_ctx_code"><code>$ctx = $r-&gt;ctx($ctx)</code></a></li>
+<li><a href="#code_r_gt_location_name_code"><code>$r-&gt;location_name</code></a></li>
+<li><a href="#code_r_gt_root_code"><code>$r-&gt;root</code></a></li>
+<li><a href="#code_r_gt_header_in_quot_User_Agent_"><code>$r-&gt;header_in(&quot;User-Agent&quot;)</code></a></li>
+<li><a href="#code_r_gt_headers_in_code"><code>$r-&gt;headers_in</code></a></li>
+<li><a href="#code_r_gt_has_request_body_amp_handl"><code>$r-&gt;has_request_body(\&amp;handler)</code></a></li>
+<li><a href="#code_r_gt_request_body_code"><code>$r-&gt;request_body</code></a></li>
+<li><a href="#code_r_gt_request_body_file_code"><code>$r-&gt;request_body_file</code></a></li>
+<li><a href="#code_r_gt_discard_request_body_code"><code>$r-&gt;discard_request_body</code></a></li>
+<li><a href="#code_r_gt_header_out_name_value_code"><code>$r-&gt;header_out($name, $value)</code></a></li>
+<li><a href="#code_r_gt_filename_code"><code>$r-&gt;filename</code></a></li>
+<li><a href="#code_r_gt_print_data_code"><code>$r-&gt;print($data, ...)</code></a></li>
+<li><a href="#code_r_gt_sendfile_filename_offset_l"><code>$r-&gt;sendfile($filename, $offset, $length)</code></a></li>
+<li><a href="#code_r_gt_flush_code"><code>$r-&gt;flush</code></a></li>
+<li><a href="#code_r_gt_internal_redirect_uri_code"><code>$r-&gt;internal_redirect($uri)</code></a></li>
+<li><a href="#code_r_gt_allow_ranges_code"><code>$r-&gt;allow_ranges</code></a></li>
+<li><a href="#code_r_gt_unescape_data_code"><code>$r-&gt;unescape($data)</code></a></li>
+<li><a href="#code_r_gt_variable_name_value_code"><code>$r-&gt;variable($name, $value)</code></a></li>
+<li><a href="#code_r_gt_log_error_errno_message_co"><code>$r-&gt;log_error($errno, $message)</code></a></li>
+<li><a href="#code_r_gt_main_count_inc_code"><code>$r-&gt;main_count_inc()</code></a></li>
+<li><a href="#code_r_gt_send_special_rc_code"><code>$r-&gt;send_special($rc)</code></a></li>
+<li><a href="#code_r_gt_finalize_request_rc_code"><code>$r-&gt;finalize_request($rc)</code></a></li>
+<li><a href="#code_r_gt_phase_handler_inc_code"><code>$r-&gt;phase_handler_inc()</code></a></li>
+<li><a href="#code_r_gt_core_run_phases_code"><code>$r-&gt;core_run_phases()</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a href="#FLOW_CONTROL">FLOW CONTROL</a></li>
 <li><a href="#ERROR_HANDLING">ERROR HANDLING</a></li>
-<li><a href="#ASYNCHRONOUS_API">ASYNCHRONOUS API</a></li>
-<li><a href="#CONNECTION_TAKEOVER">CONNECTION TAKEOVER</a></li>
+<li><a href="#ASYNCHRONOUS_API">ASYNCHRONOUS API</a>
+<ul>
+<li>
+<ul><li><a href="#code_ngx_timer_after_repeat_sub_code"><code>ngx_timer $after, $repeat, sub { };</code></a></li>
+<li><a href="#code_ngx_connector_ip_port_timeout_s"><code>ngx_connector $ip, $port, $timeout, sub { };</code></a></li>
+<li><a href="#code_ngx_reader_c_buf_min_max_timeou"><code>ngx_reader $c, $buf, $min, $max, $timeout, sub { };</code></a></li>
+<li><a href="#code_ngx_writer_c_buf_timeout_sub_co"><code>ngx_writer $c, $buf, $timeout, sub { };</code></a></li>
+<li><a href="#code_ngx_ssl_handshaker_c_timeout_su"><code>ngx_ssl_handshaker $c, $timeout, sub { };</code></a></li>
+<li><a href="#code_ngx_resolver_name_timeout_sub_c"><code>ngx_resolver $name, $timeout, sub { };</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#CONNECTION_TAKEOVER">CONNECTION TAKEOVER</a>
+<ul><li><a href="#METHODS-2">METHODS</a>
+<ul><li><a href="#code_r_gt_take_connection_code"><code>$r-&gt;take_connection</code></a></li>
+<li><a href="#code_r_gt_give_connection_code"><code>$r-&gt;give_connection</code></a></li>
+</ul>
+</li>
+<li><a href="#TAKEOVER">TAKEOVER</a></li>
+</ul>
+</li>
 <li><a href="#TIPS_AND_TRICKS">TIPS AND TRICKS</a>
 <ul><li><a href="#SELF_SUFFICIENT_HANDLERS">SELF-SUFFICIENT HANDLERS</a></li>
 </ul>
@@ -479,13 +542,28 @@ Which means there is no need to call $r-&gt;has_request_body there.</p>
 </dl>
 
 </div>
+<h1 id="NAMING">NAMING</h1>
+<div id="NAMING_CONTENT">
+<pre>    NGX_FOO_BAR  -- constants
+    ngx_*r       -- asynchronous functions (creators)
+    NGX_VERB     -- flow control constants 
+    ngx_verb     -- flow control functions
+    $r-&gt;foo_bar  -- request object's methods
+
+</pre>
+<p>Each asynchronous function has an <strong>r</strong> at the end of its name. This is 
+because those functions are creators of handlers with some parameters. 
+E.g. ngx_writer creates write handler for some connection with some
+scalar as a buffer.</p>
+
+</div>
 <h1 id="INTERNAL_FUNCTIONS">INTERNAL FUNCTIONS</h1>
 <div id="INTERNAL_FUNCTIONS_CONTENT">
-<dl>
-	<dt>$uri = ngx_escape_uri $src_uri, $type;</dt>
-	<dt>$uri = ngx_escape_uri $src_uri;</dt>
-	<dd>
-		<p>Escapes <code>$src_uri</code> using internal <code>ngx_escape_uri</code> function from 
+
+</div>
+<h3 id="code_uri_ngx_escape_uri_src_uri_type"><code>$uri = ngx_escape_uri $src_uri, $type</code>;</h3>
+<div id="code_uri_ngx_escape_uri_src_uri_type-2">
+<p>Escapes <code>$src_uri</code> using internal <code>ngx_escape_uri</code> function from 
 <cite>src/core/ngx_string.c</cite>. If <code>$type</code> is specified, uses it or 
 NGX_ESCAPE_URI otherwise.</p>
 <pre>    my $foo = ngx_escape_uri 'a b';
@@ -494,7 +572,7 @@ NGX_ESCAPE_URI otherwise.</p>
     my $foo = ngx_escape_uri 'a b', NGX_ESCAPE_URI;
 
 </pre>
-		<p>Type defines what characters to escape. </p>
+<p>Type defines what characters to escape. </p>
 <pre>    NGX_ESCAPE_URI                &quot; &quot;, &quot;#&quot;, &quot;%&quot;, &quot;?&quot;, 
                                   %00-%1F, %7F-%FF
 
@@ -513,70 +591,14 @@ NGX_ESCAPE_URI otherwise.</p>
     NGX_ESCAPE_MEMCACHED          &quot; &quot;, &quot;%&quot;, %00-%1F
 
 </pre>
-	</dd>
-</dl>
 
 </div>
-<h1 id="NAMING">NAMING</h1>
-<div id="NAMING_CONTENT">
-<pre>    NGX_FOO_BAR  -- constants
-    ngx_*r       -- asynchronous functions (creators)
-    NGX_VERB     -- flow control constants 
-    ngx_verb     -- flow control functions
-    $r-&gt;foo_bar  -- request object's methods
-
-</pre>
-<p>Each asynchronous function has an <strong>r</strong> at the end of its name. This is 
-because those functions are creators of handlers with some parameters. 
-E.g. ngx_writer creates write handler for some connection with some
-scalar as a buffer.</p>
+<h1 id="HTTP_API">HTTP API</h1>
+<div id="HTTP_API_CONTENT">
 
 </div>
-<h1 id="HTTP_REQUEST_OBJECT">HTTP REQUEST OBJECT</h1>
-<div id="HTTP_REQUEST_OBJECT_CONTENT">
-<p>All the things from official embedded perl are there and almost
-completely untouched. There are quite a few new methods though:</p>
-<dl>
-	<dt>$ctx = $r-&gt;ctx($ctx)</dt>
-	<dd>
-		<p>Sets and gets some context scalar. It will be useful to get some data 
-from access handler for example.</p>
-	</dd>
-	<dt>$r-&gt;location_name</dt>
-	<dd>
-		<p>Returns the name of the location.</p>
-	</dd>
-	<dt>$r-&gt;root</dt>
-	<dd>
-		<p>Returns the root path.</p>
-	</dd>
-	<dt>$r-&gt;main_count_inc()</dt>
-	<dd>
-		<p>Increases value of the internal <code>r-&gt;main-&gt;count</code> by 1 and
-therefore allows to send response later from some other callback.</p>
-	</dd>
-	<dt>$r-&gt;send_special($rc)</dt>
-	<dd>
-		<p>Sends response. </p>
-	</dd>
-	<dt>$r-&gt;finalize_request($rc)</dt>
-	<dd>
-		<p>Decreases <code>r-&gt;main-&gt;count</code> and finalizes request.</p>
-	</dd>
-	<dt>$r-&gt;phase_handler_inc()</dt>
-	<dd>
-		<p>Allows to move to the next phase handler from access handler.</p>
-	</dd>
-	<dt>$r-&gt;core_run_phases()</dt>
-	<dd>
-		<p>Allows to break out of access handler and continue later from
-some other callback.</p>
-	</dd>
-</dl>
-
-</div>
-<h1 id="HTTP_CONTENT_HANDLER">HTTP CONTENT HANDLER</h1>
-<div id="HTTP_CONTENT_HANDLER_CONTENT">
+<h2 id="CONTENT_HANDLER">CONTENT HANDLER</h2>
+<div id="CONTENT_HANDLER_CONTENT">
 <p>This is where response should get generated and send to the client.
 Here's how to send response completely asynchronously:</p>
 <pre>    sub handler {
@@ -600,8 +622,8 @@ Here's how to send response completely asynchronously:</p>
 because it allows to avoid post processing response the old way.</p>
 
 </div>
-<h1 id="HTTP_ACCESS_HANDLER">HTTP ACCESS HANDLER</h1>
-<div id="HTTP_ACCESS_HANDLER_CONTENT">
+<h2 id="ACCESS_HANDLER">ACCESS HANDLER</h2>
+<div id="ACCESS_HANDLER_CONTENT">
 <p>Access handler is a perfect place for access control. Return <code>NGX_OK</code>
 to allow access or some HTTP error to deny:</p>
 <pre>    sub access_handler {
@@ -690,6 +712,248 @@ on your configuration. And if you are using redis for this you should
 consider caching reply even for a little time.</p>
 
 </div>
+<h2 id="METHODS">METHODS</h2>
+<div id="METHODS_CONTENT">
+<p>Most of the following methods are available for both original embedded perl
+and nginx-perl. </p>
+
+</div>
+<h3 id="code_r_gt_status_status_code"><code>$r-&gt;status($status)</code></h3>
+<div id="code_r_gt_status_status_code_CONTENT">
+<p>Sets response status. </p>
+<pre>    $r-&gt;status(404);
+
+</pre>
+
+</div>
+<h3 id="code_r_gt_send_http_header_content_t"><code>$r-&gt;send_http_header($content_type)</code></h3>
+<div id="code_r_gt_send_http_header_content_t-2">
+<p>Sends http headers of the response. If <code>$content_type</code> is given sets
+content type of the response.</p>
+<pre>    $r-&gt;send_http_header(&quot;text/html; charset=UTF-8&quot;);
+
+</pre>
+
+</div>
+<h3 id="code_r_gt_header_only_code"><code>$r-&gt;header_only</code></h3>
+<div id="code_r_gt_header_only_code_CONTENT">
+<p>Returns true if client expects only header of the response, e.g. HEAD request.</p>
+<pre>    unless ($r-&gt;header_only) {
+        $r-&gt;print(&quot;hello world&quot;);
+    }
+
+</pre>
+
+</div>
+<h3 id="code_r_gt_uri_code"><code>$r-&gt;uri</code></h3>
+<div id="code_r_gt_uri_code_CONTENT">
+<p>Returns normalized uri of the request without query string. Unparsed uri
+available through either new method <code>$r-&gt;unparsed_uri</code> or internal
+variable <code>$r-&gt;variable(&quot;request_uri&quot;)</code>.</p>
+
+</div>
+<h3 id="code_r_gt_args_code"><code>$r-&gt;args</code></h3>
+<div id="code_r_gt_args_code_CONTENT">
+<p>This is just a query string. </p>
+
+</div>
+<h3 id="code_r_gt_request_method_code"><code>$r-&gt;request_method</code></h3>
+<div id="code_r_gt_request_method_code_CONTEN">
+<p>Returns HTTP request method. As usual GET, HEAD, POST, etc.</p>
+
+</div>
+<h3 id="code_r_gt_remote_addr_code"><code>$r-&gt;remote_addr</code></h3>
+<div id="code_r_gt_remote_addr_code_CONTENT">
+<p>Returns textual representation of remote address.</p>
+
+</div>
+<h3 id="code_ctx_r_gt_ctx_ctx_code"><code>$ctx = $r-&gt;ctx($ctx)</code></h3>
+<div id="code_ctx_r_gt_ctx_ctx_code_CONTENT">
+<p>Sets and gets some context scalar. It will be useful to get some data 
+from access handler for example.</p>
+
+</div>
+<h3 id="code_r_gt_location_name_code"><code>$r-&gt;location_name</code></h3>
+<div id="code_r_gt_location_name_code_CONTENT">
+<p>Returns the name of the location. </p>
+<pre>    location /foo {
+        perl_handler ...;
+    }
+
+    my $loc = $r-&gt;location_name;    
+    # $loc = '/foo'
+
+</pre>
+
+</div>
+<h3 id="code_r_gt_root_code"><code>$r-&gt;root</code></h3>
+<div id="code_r_gt_root_code_CONTENT">
+<p>Returns the root path.</p>
+
+</div>
+<h3 id="code_r_gt_header_in_quot_User_Agent_"><code>$r-&gt;header_in(&quot;User-Agent&quot;)</code></h3>
+<div id="code_r_gt_header_in_quot_User_Agent_-2">
+<p>Returns desired HTTP header. Case doesn't matter. If you want to get
+all of the headers take a look at one of the new methods: 
+<code>$r-&gt;headers_in</code>.</p>
+
+</div>
+<h3 id="code_r_gt_headers_in_code"><code>$r-&gt;headers_in</code></h3>
+<div id="code_r_gt_headers_in_code_CONTENT">
+<p>Returns all headers in the following form:</p>
+<pre>    {  content-type   =&gt; ['text/html'],
+       content-length =&gt; [1234]          }
+
+</pre>
+
+</div>
+<h3 id="code_r_gt_has_request_body_amp_handl"><code>$r-&gt;has_request_body(\&amp;handler)</code></h3>
+<div id="code_r_gt_has_request_body_amp_handl-2">
+<p>Returns true if there is a request body to be read and sets the handler 
+to call when done or false otherwise. And if there is a body you should
+return from current handler and continue in the new one. </p>
+<pre>    sub handler {
+        my ($r) = @_;
+
+        if ( $r-&gt;has_request_body(\&amp;handler_with_body) ) {
+            return OK;
+        }
+
+        ...
+    }
+
+    sub handler_with_body {
+        my ($r) = @_;
+
+        my $body = $r-&gt;request_body;
+        ...
+    }
+
+</pre>
+
+</div>
+<h3 id="code_r_gt_request_body_code"><code>$r-&gt;request_body</code></h3>
+<div id="code_r_gt_request_body_code_CONTENT">
+<p>Returns request body if it is stored in memory or undef otherwise.
+By default request body will be read into memory if it is less than 
+<code>client_body_buffer_size</code> and <code>client_max_body_size</code>. You can change
+them in <cite>nginx-perl.conf</cite>.</p>
+
+</div>
+<h3 id="code_r_gt_request_body_file_code"><code>$r-&gt;request_body_file</code></h3>
+<div id="code_r_gt_request_body_file_code_CON">
+<p>If request body doesn't fit into <code>client_body_buffer_size</code> it is stored
+in temporary file. You can read it yourself.</p>
+<pre>    sub handler_with_body {
+        my ($r) = @_;
+        my $filename = $r-&gt;request_body_file;
+
+        if (open $fh, '&lt;', $filename) {
+            ...
+        }
+    }
+
+</pre>
+
+</div>
+<h3 id="code_r_gt_discard_request_body_code"><code>$r-&gt;discard_request_body</code></h3>
+<div id="code_r_gt_discard_request_body_code_">
+<p>Tells nginx to ignore request body. </p>
+
+</div>
+<h3 id="code_r_gt_header_out_name_value_code"><code>$r-&gt;header_out($name, $value)</code></h3>
+<div id="code_r_gt_header_out_name_value_code-2">
+<p>Adds HTTP header <code>&quot;$name: $value&quot;</code> to the response.</p>
+
+</div>
+<h3 id="code_r_gt_filename_code"><code>$r-&gt;filename</code></h3>
+<div id="code_r_gt_filename_code_CONTENT">
+<p>Returns the name of the file translated from URI. </p>
+
+</div>
+<h3 id="code_r_gt_print_data_code"><code>$r-&gt;print($data, ...)</code></h3>
+<div id="code_r_gt_print_data_code_CONTENT">
+<p>Sends <code>$data</code> to the client. Make sure to send HTTP header before
+you use this function.</p>
+
+</div>
+<h3 id="code_r_gt_sendfile_filename_offset_l"><code>$r-&gt;sendfile($filename, $offset, $length)</code></h3>
+<div id="code_r_gt_sendfile_filename_offset_l-2">
+<p>Kind of like print, buf sends a static file instead. If <code>$offset</code> and
+<code>$length</code> are specified uses them. Actual sending happens later.</p>
+<p>If you have <code>sendfile on;</code> in your <cite>nginx-perl.conf</cite> it will bypass
+output filters like gzip.</p>
+
+</div>
+<h3 id="code_r_gt_flush_code"><code>$r-&gt;flush</code></h3>
+<div id="code_r_gt_flush_code_CONTENT">
+<p>Forces nginx to start sending data to the client.</p>
+
+</div>
+<h3 id="code_r_gt_internal_redirect_uri_code"><code>$r-&gt;internal_redirect($uri)</code></h3>
+<div id="code_r_gt_internal_redirect_uri_code-2">
+<p>Performs internal redirect to <code>$uri</code>. You can use it with original handler
+only, i.e. you have to return <code>OK</code> after this call. </p>
+<p>It might change in the future.</p>
+
+</div>
+<h3 id="code_r_gt_allow_ranges_code"><code>$r-&gt;allow_ranges</code></h3>
+<div id="code_r_gt_allow_ranges_code_CONTENT">
+<p>Allows nginx to handle byte ranges in the response.</p>
+
+</div>
+<h3 id="code_r_gt_unescape_data_code"><code>$r-&gt;unescape($data)</code></h3>
+<div id="code_r_gt_unescape_data_code_CONTENT">
+<p>Unescapes URI escaped data (<code>&quot;%XX&quot;</code>). </p>
+
+</div>
+<h3 id="code_r_gt_variable_name_value_code"><code>$r-&gt;variable($name, $value)</code></h3>
+<div id="code_r_gt_variable_name_value_code_C">
+<p>Gets and sets internal variables, the ones that you can see in config.</p>
+
+</div>
+<h3 id="code_r_gt_log_error_errno_message_co"><code>$r-&gt;log_error($errno, $message)</code></h3>
+<div id="code_r_gt_log_error_errno_message_co-2">
+<p>Logs error message using current connection's log. </p>
+
+</div>
+<h3 id="code_r_gt_main_count_inc_code"><code>$r-&gt;main_count_inc()</code></h3>
+<div id="code_r_gt_main_count_inc_code_CONTEN">
+<p>Increases value of an internal <code>r-&gt;main-&gt;count</code> by 1 and
+therefore allows to send response later from some other callback.</p>
+
+</div>
+<h3 id="code_r_gt_send_special_rc_code"><code>$r-&gt;send_special($rc)</code></h3>
+<div id="code_r_gt_send_special_rc_code_CONTE">
+<p>Sends response in a special way. We are using this function
+to send response asynchronously from non-http handlers.</p>
+<pre>    ngx_timer 1, 0, sub {
+        $r-&gt;send_http_header('text/html');
+        $r-&gt;print(&quot;OK\n&quot;);
+
+        $r-&gt;send_special(NGX_HTTP_LAST);
+        $r-&gt;finalize_request(NGX_OK);
+    };
+
+</pre>
+
+</div>
+<h3 id="code_r_gt_finalize_request_rc_code"><code>$r-&gt;finalize_request($rc)</code></h3>
+<div id="code_r_gt_finalize_request_rc_code_C">
+<p>Decreases <code>r-&gt;main-&gt;count</code> and finalizes request.</p>
+
+</div>
+<h3 id="code_r_gt_phase_handler_inc_code"><code>$r-&gt;phase_handler_inc()</code></h3>
+<div id="code_r_gt_phase_handler_inc_code_CON">
+<p>Allows to move to the next phase handler from access handler.</p>
+
+</div>
+<h3 id="code_r_gt_core_run_phases_code"><code>$r-&gt;core_run_phases()</code></h3>
+<div id="code_r_gt_core_run_phases_code_CONTE">
+<p>Allows to break out of access handler and continue later from
+some other callback.</p>
+
+</div>
 <h1 id="FLOW_CONTROL">FLOW CONTROL</h1>
 <div id="FLOW_CONTROL_CONTENT">
 <p>To specify what to do after each callback we can either call some 
@@ -767,21 +1031,22 @@ to NGX_EOF in such case. </p>
 </div>
 <h1 id="ASYNCHRONOUS_API">ASYNCHRONOUS API</h1>
 <div id="ASYNCHRONOUS_API_CONTENT">
-<dl>
-	<dt>ngx_timer $after, $repeat, sub { };</dt>
-	<dd>
-		<p>Creates new timer and calls back after <code>$after</code> seconds.
+
+</div>
+<h3 id="code_ngx_timer_after_repeat_sub_code"><code>ngx_timer $after, $repeat, sub { };</code></h3>
+<div id="code_ngx_timer_after_repeat_sub_code-2">
+<p>Creates new timer and calls back after <code>$after</code> seconds.
 If <code>$repeat</code> is set reschedules the timer to call back again after 
 <code>$repeat</code> seconds or destroys it otherwise.</p>
-		<p>Internally <code>$repeat</code> is stored as a refence, so changing it will influence
+<p>Internally <code>$repeat</code> is stored as a refence, so changing it will influence
 rescheduling behaviour.</p>
-		<p>Simple example calls back just once after 1 second:</p>
+<p>Simple example calls back just once after 1 second:</p>
 <pre>    ngx_timer 1, 0, sub {
         warn &quot;tada\n&quot;;
     };
 
 </pre>
-		<p>This one is a bit trickier, calls back after 5, 4, 3, 2, 1 seconds 
+<p>This one is a bit trickier, calls back after 5, 4, 3, 2, 1 seconds 
 and destroys itself:</p>
 <pre>    my $repeat = 5;
 
@@ -789,24 +1054,25 @@ and destroys itself:</p>
         $repeat--;
     };
 
-
-
-
 </pre>
-	</dd>
-	<dt>ngx_connector $ip, $port, $timeout, sub { };</dt>
-	<dd>
-		<p>Creates connect handler and attempts to connect to <code>$ip:$port</code> within 
+
+</div>
+<h3 id="code_ngx_connector_ip_port_timeout_s"><code>ngx_connector $ip, $port, $timeout, sub { };</code></h3>
+<div id="code_ngx_connector_ip_port_timeout_s-2">
+<p>Creates connect handler and attempts to connect to <code>$ip:$port</code> within 
 <code>$timeout</code> seconds. Calls back with connection in <code>@_</code> afterwards. 
 On error calls back with <code>$!</code> set to some value.</p>
-		<p>Expects one of the following control flow constants as a result of callback: </p>
+<p>Expects one of the following control flow constants as a result of callback: </p>
 <pre>    NGX_CLOSE
     NGX_READ 
     NGX_WRITE
     NGX_SSL_HANDSHAKE
 
 </pre>
-		<p>Example:</p>
+<p>Additionally returns connection, if you need one. However, it might be a <code>0</code>
+on some errors, make sure to check it's not if you are planning to use it
+with flow control functions.</p>
+<p>Example:</p>
 <pre>    ngx_connector $ip, 80, 15, sub {
 
         return NGX_CLOSE
@@ -819,23 +1085,24 @@ On error calls back with <code>$!</code> set to some value.</p>
     };
 
 </pre>
-	</dd>
-	<dt>ngx_reader $connection, $buf, $min, $max, $timeout, sub { };</dt>
-	<dd>
-		<p>Creates read handler for <code>$connection</code> with buffer <code>$buf</code>.
+
+</div>
+<h3 id="code_ngx_reader_c_buf_min_max_timeou"><code>ngx_reader $c, $buf, $min, $max, $timeout, sub { };</code></h3>
+<div id="code_ngx_reader_c_buf_min_max_timeou-2">
+<p>Creates read handler for connection <code>$c</code> with buffer <code>$buf</code>.
 <code>$min</code> indicates how much data should be present in <code>$buf</code> 
 before the callback and <code>$max</code> limits total length of <code>$buf</code>.</p>
-		<p>Internally <code>$buf</code>, <code>$min</code>, <code>$max</code> and <code>$timeout</code> are stored
+<p>Internally <code>$buf</code>, <code>$min</code>, <code>$max</code> and <code>$timeout</code> are stored
 as refernces, so you can change them at any time to influence
 reader's behavior.</p>
-		<p>Expects one of the following control flow constants as a result of callback: </p>
+<p>Expects one of the following control flow constants as a result of callback: </p>
 <pre>    NGX_CLOSE
     NGX_READ 
     NGX_WRITE
     NGX_SSL_HANDSHAKE
 
 </pre>
-		<p>On error calls back with <code>$!</code> set to some value, including 
+<p>On error calls back with <code>$!</code> set to some value, including 
 NGX_EOF in case of EOF. </p>
 <pre>    my $buf;
 
@@ -849,25 +1116,26 @@ NGX_EOF in case of EOF. </p>
     };
 
 </pre>
-		<p>Be aware, that <code>$min</code> and <code>$max</code> doesn't apply to the amount of data
+<p>Be aware, that <code>$min</code> and <code>$max</code> doesn't apply to the amount of data
 you want to read but rather to the appropriate buffer size to call back with.</p>
-	</dd>
-	<dt>ngx_writer $connection, $buf, $timeout, sub { };</dt>
-	<dd>
-		<p>Creates write handler for <code>$connection</code> with buffer <code>$buf</code> and 
+
+</div>
+<h3 id="code_ngx_writer_c_buf_timeout_sub_co"><code>ngx_writer $c, $buf, $timeout, sub { };</code></h3>
+<div id="code_ngx_writer_c_buf_timeout_sub_co-2">
+<p>Creates write handler for connection <code>$c</code> with buffer <code>$buf</code> and 
 write timeout in &lt;$timeout&gt;.</p>
-		<p>Internally <code>$buf</code> and <code>$timeout</code> are stored as references, so 
+<p>Internally <code>$buf</code> and <code>$timeout</code> are stored as references, so 
 changing them will influence writer's behavior. </p>
-		<p>Expects one of the following control flow constants as a result of callback: </p>
+<p>Expects one of the following control flow constants as a result of callback: </p>
 <pre>    NGX_CLOSE
     NGX_READ 
     NGX_WRITE
     NGX_SSL_HANDSHAKE
 
 </pre>
-		<p>On error calls back with <code>$!</code> set to some value. NGX_EOF should be
+<p>On error calls back with <code>$!</code> set to some value. NGX_EOF should be
 treated as fatal error here. </p>
-		<p>Example:</p>
+<p>Example:</p>
 <pre>    my $buf = &quot;GET /\n&quot;;
 
     ngx_writer $c, $buf, 15, sub {
@@ -880,22 +1148,23 @@ treated as fatal error here. </p>
     };
 
 </pre>
-	</dd>
-	<dt>ngx_ssl_handshaker $connection, $timeout, sub { };</dt>
-	<dd>
-		<p>Creates its own internal handler for both reading and writing and tries 
+
+</div>
+<h3 id="code_ngx_ssl_handshaker_c_timeout_su"><code>ngx_ssl_handshaker $c, $timeout, sub { };</code></h3>
+<div id="code_ngx_ssl_handshaker_c_timeout_su-2">
+<p>Creates its own internal handler for both reading and writing and tries 
 to do SSL handshake. </p>
-		<p>Expects one of the following control flow constants as a result of callback: </p>
+<p>Expects one of the following control flow constants as a result of callback: </p>
 <pre>    NGX_CLOSE
     NGX_READ 
     NGX_WRITE
     NGX_SSL_HANDSHAKE
 
 </pre>
-		<p>On error calls back with <code>$!</code> set to some value. </p>
-		<p>It's important to understand that handshaker will replace your previous 
+<p>On error calls back with <code>$!</code> set to some value. </p>
+<p>It's important to understand that handshaker will replace your previous 
 reader and writer, so you have to create new ones.</p>
-		<p>Typically it should be called inside connector's callback:</p>
+<p>Typically it should be called inside connector's callback:</p>
 <pre>    ngx_connector ... sub {
 
         return NGX_CLOSE 
@@ -919,17 +1188,15 @@ reader and writer, so you have to create new ones.</p>
         return NGX_SSL_HANDSHAKE;
     };
 
-
-
-
 </pre>
-	</dd>
-	<dt>ngx_resolver $name, $timeout, sub { };</dt>
-	<dd>
-		<p>Creates resolver's handler and tries to resolve <code>$name</code> in <code>$timeout</code>
+
+</div>
+<h3 id="code_ngx_resolver_name_timeout_sub_c"><code>ngx_resolver $name, $timeout, sub { };</code></h3>
+<div id="code_ngx_resolver_name_timeout_sub_c-2">
+<p>Creates resolver's handler and tries to resolve <code>$name</code> in <code>$timeout</code>
 seconds using resolver specified in <cite>nginx-perl.conf</cite>.</p>
-		<p>On success returns all resolved IP addresses into <code>@_</code>.</p>
-		<p>On error calls back with <code>$!</code> set to some value, $_[0] set to one of the
+<p>On success returns all resolved IP addresses into <code>@_</code>.</p>
+<p>On error calls back with <code>$!</code> set to some value, $_[0] set to one of the
 resolver-specific error constants and with textual explanation in $_[1]:</p>
 <pre>    NGX_RESOLVE_FORMERR
     NGX_RESOLVE_SERVFAIL
@@ -939,7 +1206,7 @@ resolver-specific error constants and with textual explanation in $_[1]:</p>
     NGX_RESOLVE_TIMEDOUT
 
 </pre>
-		<p>This is a thin wrapper around nginx's internal resolver.
+<p>This is a thin wrapper around nginx's internal resolver.
 All its current problems apply. To use it in production you'll need
 a local resolver, like named that does actual resolving.</p>
 <pre>    ngx_resolver $host, $timeout, sub {
@@ -959,8 +1226,6 @@ a local resolver, like named that does actual resolving.</p>
     };
 
 </pre>
-	</dd>
-</dl>
 
 </div>
 <h1 id="CONNECTION_TAKEOVER">CONNECTION TAKEOVER</h1>
@@ -968,20 +1233,31 @@ a local resolver, like named that does actual resolving.</p>
 <p>It is possible to takeover client connection completely and create
 you own reader and writer on that connection. 
 You need this for websockets and protocol upgrade in general.</p>
+
+</div>
+<h2 id="METHODS-2">METHODS</h2>
+<div id="METHODS_CONTENT-2">
 <p>There are two methods to support this:</p>
-<dl>
-	<dt>$r-&gt;take_connection()</dt>
-	<dd>
-		<p><code>$r-&gt;take_connection</code> initializes internal data structure and 
-replaces connection's data with it. Returns <i>connection</i> on success
-or <i>undef</i> on error.</p>
-	</dd>
-	<dt>$r-&gt;give_connection()</dt>
-	<dd>
-		<p><code>$r-&gt;give_connection</code> attaches request <code>$r</code> back to its connection.
+
+</div>
+<h3 id="code_r_gt_take_connection_code"><code>$r-&gt;take_connection</code></h3>
+<div id="code_r_gt_take_connection_code_CONTE">
+<p><code>$r-&gt;take_connection</code> initializes internal data structure and 
+replaces connection's data with it. Returns connection on success
+or <code>undef</code> on error.</p>
+<pre>    my $c = $r-&gt;take_connection;
+
+</pre>
+
+</div>
+<h3 id="code_r_gt_give_connection_code"><code>$r-&gt;give_connection</code></h3>
+<div id="code_r_gt_give_connection_code_CONTE">
+<p><code>$r-&gt;give_connection</code> attaches request <code>$r</code> back to its connection.
 Doesn't return anything.</p>
-	</dd>
-</dl>
+
+</div>
+<h2 id="TAKEOVER">TAKEOVER</h2>
+<div id="TAKEOVER_CONTENT">
 <p>So, to takeover you need to take connection from the request, 
 tell nginx that you are going to finalize it later by calling 
 <code>$r-&gt;main_count_inc</code>, create reader and/or writer on that
