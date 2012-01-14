@@ -64,4 +64,5 @@ ul.nls { list-style: none; }
 
 div.pod div { padding: 0 1.7em; }
 div.pod ul { list-style: none; }
+div.pod ul li a { text-decoration: none; }
 
