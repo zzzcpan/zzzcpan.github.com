@@ -21,26 +21,35 @@ my $documli;
                        [ 'Nginx::Test',  'Nginx/Test.html'  ],
                        [ 'Nginx::Util',  'Nginx/Util.html'  ],
                        [ 'Nginx::Redis', 'Nginx/Redis.html' ], 
-                       [ 'Redis::Parser::XS', 'Redis/Parser/XS.html' ], 
-                       [ 'Nginx::Perl',  'Nginx/Perl.html'  ] ) {
+                       [ 'Redis::Parser::XS', 'Redis/Parser/XS.html', 'hidden' ], 
+                       [ 'Nginx::Perl',  'Nginx/Perl.html', 'hidden'  ] ) {
 
-        my ($name, $href) = @$pair;
+        my ($name, $href, $opt) = @$pair;
 
-        $documli .= "<li>";
+        if ($opt ne 'hidden') {
 
-        if ($name eq $item) {
-            $docum   .= "<b>$name</b>";
-            $documli .= "<b>$name</b>";
+            $documli .= "<li>";
+
+            if ($name eq $item) {
+                $docum   .= "<b>$name</b>";
+                $documli .= "<b>$name</b>";
+            } else {
+                $docum   .= "<a href=\"$base$href\">$name</a>";
+                $documli .= "<a href=\"$base$href\">$name</a>";
+                
+                s!<cite>$name</cite>!<a href="$base$href">$name</a>!gs;
+            }
+
+            $documli .= "</li>\n";
+
+            $docum .= " &nbsp;&nbsp; ";
+
         } else {
-            $docum   .= "<a href=\"$base$href\">$name</a>";
-            $documli .= "<a href=\"$base$href\">$name</a>";
-            
-            s!<cite>$name</cite>!<a href="$base$href">$name</a>!gs;
+
+            if ($name ne $item) {
+                s!<cite>$name</cite>!<a href="$base$href">$name</a>!gs;
+            }
         }
-
-        $documli .= "</li>\n";
-
-        $docum .= " &nbsp;&nbsp; ";
     }
 
 
