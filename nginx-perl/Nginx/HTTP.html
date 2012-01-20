@@ -2,8 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-	<title>Nginx::Perl</title>
-	<meta name="description" content="Pod documentation for Nginx::Perl" />
+	<title>Nginx::HTTP</title>
+	<meta name="description" content="Pod documentation for Nginx::HTTP" />
 	<meta name="inputfile" content="&lt;standard input&gt;" />
 	<meta name="outputfile" content="&lt;standard output&gt;" />
 	<meta name="created" content="Sat Jan 21 00:26:55 2012" />
@@ -97,7 +97,7 @@ div.pod ul li a { text-decoration: none; }
 
 		<h3>Documentation</h3>
 
-		<p><a href="../Nginx.html">Nginx</a> &nbsp;&nbsp; <a href="../Nginx/Test.html">Nginx::Test</a> &nbsp;&nbsp; <a href="../Nginx/Redis.html">Nginx::Redis</a> &nbsp;&nbsp; <a href="../Nginx/HTTP.html">Nginx::HTTP</a> &nbsp;&nbsp; </p>
+		<p><a href="../Nginx.html">Nginx</a> &nbsp;&nbsp; <a href="../Nginx/Test.html">Nginx::Test</a> &nbsp;&nbsp; <a href="../Nginx/Redis.html">Nginx::Redis</a> &nbsp;&nbsp; <b>Nginx::HTTP</b> &nbsp;&nbsp; </p>
 	</div>
 
 	<div class="w100 centr cl blockpadtop blockpadbottom">
@@ -107,10 +107,20 @@ div.pod ul li a { text-decoration: none; }
 
 <div class="pod">
 <!-- INDEX START -->
-<h3 id="TOP">Nginx::Perl</h3>
+<h3 id="TOP">Nginx::HTTP</h3>
 
 <ul><li><a href="#NAME">NAME</a></li>
+<li><a href="#SYNOPSIS">SYNOPSIS</a></li>
 <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+<li><a href="#EXPORT">EXPORT</a></li>
+<li><a href="#FUNCTIONS">FUNCTIONS</a>
+<ul>
+<li>
+<ul><li><a href="#code_ngx_http_quot_ip_port_key_value"><code>ngx_http &quot;$ip:$port:key=value;key=value...&quot;, $request, sub { }</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a href="#SEE_ALSO">SEE ALSO</a></li>
 <li><a href="#AUTHOR">AUTHOR</a></li>
 <li><a href="#LICENSE">LICENSE</a>
@@ -120,23 +130,97 @@ div.pod ul li a { text-decoration: none; }
 
 <h1 id="NAME">NAME</h1>
 <div id="NAME_CONTENT">
-<p>Nginx::Perl - full-featured perl support for nginx</p>
+<p>Nginx::HTTP - asynchronous http client for nginx-perl</p>
+
+</div>
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+<div id="SYNOPSIS_CONTENT">
+<pre>    use Nginx;
+    use Nginx::HTTP;
+
+    ngx_http &quot;1.2.3.4:80&quot;, &quot;GET / HTTP/1.1&quot;   . &quot;\x0d\x0a&quot; .
+                           &quot;Host: localhost&quot;  . &quot;\x0d\x0a&quot; .
+                           &quot;&quot;                 . &quot;\x0d\x0a&quot;   , sub {
+
+        my ($headers, $buf_ref) = @_;
+
+        unless ($headers) {
+            ngx_log_error $!, &quot;error&quot;;
+            return;
+        }
+
+        ngx_log_notice 0, &quot;got $headers-&gt;{'_status'}&quot;;
+        ...
+    };
+
+</pre>
 
 </div>
 <h1 id="DESCRIPTION">DESCRIPTION</h1>
 <div id="DESCRIPTION_CONTENT">
-<p>This is just a meta package to use as a dependency and 
-for official package name on CPAN. </p>
-<p>Most of the documentation contained in <a href="../Nginx.html">Nginx</a>, check it out.</p>
-<p>Web page: <a href="http://zzzcpan.github.com/nginx-perl">http://zzzcpan.github.com/nginx-perl</a></p>
+<p>Fast and simple asynchronous http client for <strong>nginx-perl</strong>. 
+Supports keepalive.</p>
+
+</div>
+<h1 id="EXPORT">EXPORT</h1>
+<div id="EXPORT_CONTENT">
+<pre>    ngx_http
+    ngx_http_client
+
+</pre>
+
+</div>
+<h1 id="FUNCTIONS">FUNCTIONS</h1>
+<div id="FUNCTIONS_CONTENT">
+
+</div>
+<h3 id="code_ngx_http_quot_ip_port_key_value"><code>ngx_http &quot;$ip:$port:key=value;key=value...&quot;, $request, sub { }</code></h3>
+<div id="code_ngx_http_quot_ip_port_key_value-2">
+<p>Establishes new connection with <code>$ip:$port</code> and sends raw HTTP 
+request. <code>$request</code> should be either scalar or scalar reference. 
+Additionally there are two options available: <code>timeout</code> and <code>ssl</code>. E.g.:</p>
+<pre>    ngx_http &quot;1.2.3.4:443:ssl=1;timeout=15&quot;, ...
+    ngx_http &quot;1.2.3.4:80:timeout=15&quot;, ...
+    ngx_http &quot;1.2.3.4:80&quot;, ...
+
+</pre>
+<p>Calls back with parsed response header in <code>$_[0]</code> and scalar reference to 
+the body in <code>$_[1]</code>. </p>
+<pre>    $headers =  {  _status        =&gt; 503,
+                   content-type   =&gt; ['text/html'],
+                   content-length =&gt; [1234],
+                   ...                              };
+
+    $body = \&quot;foobar&quot;;
+
+</pre>
+<p><code>$body</code> is cleared right after the callback, so you have to copy its
+content if you want to use it later.</p>
+<p>On error calls back without any arguments. Tries to reconnect on the
+next request.</p>
+<p>For now every connection is cached forever. But you can use <code>ngx_http_client</code>
+to create desired caching behaviour. </p>
+<pre>    ngx_http &quot;1.2.3.4:80&quot;, &quot;GET / HTTP/1.1&quot;   . &quot;\x0d\x0a&quot; .
+                           &quot;Host: localhost&quot;  . &quot;\x0d\x0a&quot; .
+                           &quot;&quot;                 . &quot;\x0d\x0a&quot;   , sub {
+
+        my ($headers, $body_ref) = @_;
+
+        unless ($headers) {
+            ngx_log_error $!, &quot;error&quot;;
+            return;
+        }
+
+        ngx_log_notice 0, &quot;got $headers-&gt;{'_status'}&quot;;
+        ...
+    };
+
+</pre>
 
 </div>
 <h1 id="SEE_ALSO">SEE ALSO</h1>
 <div id="SEE_ALSO_CONTENT">
-<p><a href="http://zzzcpan.github.com/nginx-perl">http://zzzcpan.github.com/nginx-perl</a>,
-<a href="../Nginx.html">Nginx</a>, <a href="../Nginx/Test.html">Nginx::Test</a>, <a href="../Nginx/Util.html">Nginx::Util</a>, <a href="../Nginx/Redis.html">Nginx::Redis</a>,
-<a href="http://wiki.nginx.org/EmbeddedPerlModule">http://wiki.nginx.org/EmbeddedPerlModule</a>,
-<a href="http://nginx.net/">http://nginx.net/</a> </p>
+<p><a href="../Nginx.html">Nginx</a>, <a href="../HTTP/Parser2/XS.html">HTTP::Parser2::XS</a></p>
 
 </div>
 <h1 id="AUTHOR">AUTHOR</h1>
@@ -146,9 +230,9 @@ for official package name on CPAN. </p>
 </div>
 <h1 id="LICENSE">LICENSE</h1>
 <div id="LICENSE_CONTENT">
-<p>Copyright 2011 Alexandr Gomoliako. All rights reserved.</p>
+<p>Copyright 2012 Alexandr Gomoliako. All rights reserved.</p>
 <p>This module is free software. It may be used, redistributed and/or modified 
-under the same terms as <strong>nginx</strong> itself.</p>
+under the same terms as Perl itself.</p>
 
 </div>
 </div>

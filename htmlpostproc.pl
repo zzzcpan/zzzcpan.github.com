@@ -19,10 +19,14 @@ my $documli;
 
     foreach my $pair ( [ 'Nginx',        'Nginx.html',      ],
                        [ 'Nginx::Test',  'Nginx/Test.html'  ],
-                       [ 'Nginx::Util',  'Nginx/Util.html'  ],
+                       [ 'Nginx::Util',  'Nginx/Util.html', 'hidden' ],
                        [ 'Nginx::Redis', 'Nginx/Redis.html' ], 
-                       [ 'Redis::Parser::XS', 'Redis/Parser/XS.html', 'hidden' ], 
-                       [ 'Nginx::Perl',  'Nginx/Perl.html', 'hidden'  ] ) {
+                       [ 'Nginx::HTTP',  'Nginx/HTTP.html'  ], 
+                       [ 'Redis::Parser::XS', 
+                            'Redis/Parser/XS.html', 'hidden' ], 
+                       [ 'HTTP::Parser2::XS', 
+                            'HTTP/Parser2/XS.html', 'hidden' ], 
+                       [ 'Nginx::Perl',  'Nginx/Perl.html', 'hidden' ] ) {
 
         my ($name, $href, $opt) = @$pair;
 
