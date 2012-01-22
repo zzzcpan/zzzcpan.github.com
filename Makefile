@@ -16,7 +16,6 @@ web: \
 	nginx-perl/index.html \
 	nginx-perl/Nginx.html \
 	nginx-perl/Nginx/Test.html \
-	nginx-perl/Nginx/Util.html \
 	nginx-perl/Nginx/Redis.html \
 	nginx-perl/Nginx/HTTP.html \
 	nginx-perl/Redis/Parser/XS.html \
@@ -53,13 +52,6 @@ nginx-perl/Nginx/Test.html: \
 	$(HTMLPOSTPROC) Nginx::Test ../ \
 		< nginx-perl/Nginx/Test.html.in \
 		> nginx-perl/Nginx/Test.html
-
-nginx-perl/Nginx/Util.html: \
-		$(DEPS) \
-		nginx-perl/Nginx/Util.html.in
-	$(HTMLPOSTPROC) Nginx::Util ../ \
-		< nginx-perl/Nginx/Util.html.in \
-		> nginx-perl/Nginx/Util.html
 
 nginx-perl/Nginx/Redis.html: \
 		$(DEPS) \
@@ -110,14 +102,6 @@ nginx-perl/Nginx/Test.html.in: \
 	$(POD2XHTML) \
 		< $(NGINXPERL)/src/http/modules/perl/Test.pm \
 		> nginx-perl/Nginx/Test.html.in
-
-nginx-perl/Nginx/Util.html.in: \
-		$(DEPS) \
-		nginx-perl/Nginx/.exists \
-	$(NGINXPERL)/src/http/modules/perl/Util.pm
-	$(POD2XHTML) \
-		< $(NGINXPERL)/src/http/modules/perl/Util.pm \
-		> nginx-perl/Nginx/Util.html.in
 
 nginx-perl/Nginx/Redis.html.in: \
 		$(DEPS) \

@@ -6,7 +6,7 @@
 	<meta name="description" content="Pod documentation for Nginx::Test" />
 	<meta name="inputfile" content="&lt;standard input&gt;" />
 	<meta name="outputfile" content="&lt;standard output&gt;" />
-	<meta name="created" content="Sat Jan 21 00:26:54 2012" />
+	<meta name="created" content="Sun Jan 22 05:49:09 2012" />
 	<meta name="generator" content="Pod::Xhtml 1.61" />
 </head>
 <style type="text/css"><!--
@@ -124,6 +124,7 @@ div.pod ul li a { text-decoration: none; }
 <li><a href="#code_text_cat_nginx_logs_dir_code"><code>$text = cat_nginx_logs $dir;</code></a></li>
 <li><a href="#code_child_fork_nginx_die_nginx_dir_"><code>$child = fork_nginx_die $nginx, $dir;</code></a></li>
 <li><a href="#code_child_fork_child_die_sub_code"><code>$child = fork_child_die sub { ... };</code></a></li>
+<li><a href="#code_incs_get_nginx_incs_nginx_dir_c"><code>@incs = get_nginx_incs $nginx, $dir;</code></a></li>
 <li><a href="#code_child_peer_fork_nginx_handler_d"><code>($child, $peer) = fork_nginx_handler_dir $nginx, $dir, $conf, $code;</code></a></li>
 <li><a href="#code_body_headers_http_get_peer_uri_"><code>($body, $headers) = http_get $peer, $uri, $timeout;</code></a></li>
 </ul>
@@ -305,6 +306,11 @@ Internally does something like this: <code>&quot;$nginx -p $dir&quot;</code></p>
     undef $child;
 
 </pre>
+
+</div>
+<h3 id="code_incs_get_nginx_incs_nginx_dir_c"><code>@incs = get_nginx_incs $nginx, $dir;</code></h3>
+<div id="code_incs_get_nginx_incs_nginx_dir_c-2">
+<p>Generates proper <code>@INC</code> to use in <cite>nginx-perl.conf</cite> during tests.</p>
 
 </div>
 <h3 id="code_child_peer_fork_nginx_handler_d"><code>($child, $peer) = fork_nginx_handler_dir $nginx, $dir, $conf, $code;</code></h3>
