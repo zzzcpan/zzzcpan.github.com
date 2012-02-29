@@ -6,7 +6,7 @@
 	<meta name="description" content="Pod documentation for Nginx" />
 	<meta name="inputfile" content="&lt;standard input&gt;" />
 	<meta name="outputfile" content="&lt;standard output&gt;" />
-	<meta name="created" content="Thu Feb 16 00:51:31 2012" />
+	<meta name="created" content="Wed Feb 29 19:35:25 2012" />
 	<meta name="generator" content="Pod::Xhtml 1.61" />
 </head>
 <style type="text/css"><!--
@@ -142,6 +142,7 @@ div.pod ul li a { text-decoration: none; }
 <li><a href="#code_r_gt_header_in_quot_User_Agent_"><code>$r-&gt;header_in(&quot;User-Agent&quot;)</code></a></li>
 <li><a href="#code_r_gt_headers_in_code"><code>$r-&gt;headers_in</code></a></li>
 <li><a href="#code_r_gt_has_request_body_amp_handl"><code>$r-&gt;has_request_body(\&amp;handler)</code></a></li>
+<li><a href="#code_r_gt_preread_code"><code>$r-&gt;preread</code></a></li>
 <li><a href="#code_r_gt_request_body_code"><code>$r-&gt;request_body</code></a></li>
 <li><a href="#code_r_gt_request_body_file_code"><code>$r-&gt;request_body_file</code></a></li>
 <li><a href="#code_r_gt_discard_request_body_code"><code>$r-&gt;discard_request_body</code></a></li>
@@ -815,6 +816,12 @@ return from current handler and continue in the new one. </p>
     }
 
 </pre>
+
+</div>
+<h3 id="code_r_gt_preread_code"><code>$r-&gt;preread</code></h3>
+<div id="code_r_gt_preread_code_CONTENT">
+<p>Returns part of the body already present in the header's buffer or undef
+otherwise. </p>
 
 </div>
 <h3 id="code_r_gt_request_body_code"><code>$r-&gt;request_body</code></h3>
