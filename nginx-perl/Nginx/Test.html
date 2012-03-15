@@ -6,7 +6,7 @@
 	<meta name="description" content="Pod documentation for Nginx::Test" />
 	<meta name="inputfile" content="&lt;standard input&gt;" />
 	<meta name="outputfile" content="&lt;standard output&gt;" />
-	<meta name="created" content="Wed Feb 29 19:35:25 2012" />
+	<meta name="created" content="Thu Mar 15 17:02:53 2012" />
 	<meta name="generator" content="Pod::Xhtml 1.61" />
 </head>
 <style type="text/css"><!--
@@ -226,7 +226,7 @@ Returns undef on error.</p>
 </div>
 <h3 id="code_rv_wait_for_peer_quot_host_port"><code>$rv = wait_for_peer &quot;$host:$port&quot;, $timeout;</code></h3>
 <div id="code_rv_wait_for_peer_quot_host_port-2">
-<p>Tries to connect to <code>$host:$port</code> within $timeout. Returns <code>1</code>
+<p>Tries to connect to <code>$host:$port</code> within <code>$timeout</code> seconds. Returns <code>1</code>
 on success and <code>undef</code> on error.</p>
 <pre>    wait_for_peer &quot;127.0.0.1:1234&quot;, 2
         or ...;
