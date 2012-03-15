@@ -6,7 +6,7 @@
 	<meta name="description" content="Pod documentation for Nginx" />
 	<meta name="inputfile" content="&lt;standard input&gt;" />
 	<meta name="outputfile" content="&lt;standard output&gt;" />
-	<meta name="created" content="Thu Mar 15 17:02:52 2012" />
+	<meta name="created" content="Thu Mar 15 20:32:54 2012" />
 	<meta name="generator" content="Pod::Xhtml 1.61" />
 </head>
 <style type="text/css"><!--
@@ -191,6 +191,10 @@ div.pod ul li a { text-decoration: none; }
 </li>
 <li><a href="#TIPS_AND_TRICKS">TIPS AND TRICKS</a>
 <ul><li><a href="#SELF_SUFFICIENT_HANDLERS">SELF-SUFFICIENT HANDLERS</a></li>
+</ul>
+</li>
+<li><a href="#EXAMPLES">EXAMPLES</a>
+<ul><li><a href="#REQUEST_QUEUE">REQUEST QUEUE</a></li>
 </ul>
 </li>
 <li><a href="#SEE_ALSO">SEE ALSO</a></li>
@@ -1406,6 +1410,74 @@ from <cite>nginx-perl.conf</cite>:</p>
 <pre>    % ./objs/nginx-perl -p eg/self-sufficient
 
 </pre>
+
+</div>
+<h1 id="EXAMPLES">EXAMPLES</h1>
+<div id="EXAMPLES_CONTENT">
+
+</div>
+<h2 id="REQUEST_QUEUE">REQUEST QUEUE</h2>
+<div id="REQUEST_QUEUE_CONTENT">
+<p>In <strong>nginx-perl</strong> every request object <code>$r</code> is created and destroyed with 
+nginx's own request. This means, that it is possible to reorder natural
+request flow in any way you want. It can be very helpful in case of DDOS,
+unusual load spikes or anything else you can think of.</p>
+<p>Request queuing is going to illustrate this feature.</p>
+<p>Let's start by defining variables for our simple queueing system:</p>
+<pre>    our @QUEUE;
+    our $MAX_ACTIVE_REQUESTS = 4;
+    our $ACTIVE_REQUESTS = 0;
+
+</pre>
+<p>Next, let's create an access handler that does actual queueing:</p>
+<pre>    sub access_handler {
+        my ($r) = @_;
+
+        if ($ACTIVE_REQUESTS &lt; $MAX_ACTIVE_REQUESTS) {
+            $ACTIVE_REQUESTS++;
+
+            return NGX_OK;
+        } else {
+            $r-&gt;log_error(0, &quot;Too many concurrent requests, queueing&quot;);
+
+            push @QUEUE, $r;
+
+            return NGX_DONE;
+        }
+    }
+
+</pre>
+<p>Simple enough. But now we need a way to process our queue of requests.
+We are going to do this by creating our own destructor for request object.
+Every request object is blessed with <code>Nginx</code> package, so <code>Nginx::DESTROY</code>
+is what we need:</p>
+<pre>    sub Nginx::DESTROY {
+        if (@QUEUE == 0) {
+            $ACTIVE_REQUESTS--;
+        } else {
+            my $r = shift @QUEUE;
+
+            $r-&gt;log_error(0, &quot;Dequeuing&quot;);
+
+            $r-&gt;phase_handler_inc;
+            $r-&gt;core_run_phases;
+        }
+    }
+
+</pre>
+<p>That's it. Here's how to use it:</p>
+<pre>    perl_require  Requestqueue.pm;
+
+    server {
+        location = /index.html {
+            perl_access  Requestqueue::access_handler;
+        }
+    }
+
+</pre>
+<p>Look for working example in <cite>eg/</cite>.</p>
+<p>Things to remember: access handler can be called multiple times depending
+on your configuration; workers don't share data between each other. </p>
 
 </div>
 <h1 id="SEE_ALSO">SEE ALSO</h1>
