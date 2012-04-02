@@ -6,7 +6,7 @@
 	<meta name="description" content="Pod documentation for Nginx::Test" />
 	<meta name="inputfile" content="&lt;standard input&gt;" />
 	<meta name="outputfile" content="&lt;standard output&gt;" />
-	<meta name="created" content="Wed Mar 28 17:41:43 2012" />
+	<meta name="created" content="Mon Apr  2 23:53:37 2012" />
 	<meta name="generator" content="Pod::Xhtml 1.61" />
 </head>
 <style type="text/css"><!--
@@ -114,21 +114,26 @@ div.pod ul li a { text-decoration: none; }
 <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
 <li><a href="#EXPORT">EXPORT</a></li>
 <li><a href="#FUNCTIONS">FUNCTIONS</a>
-<ul>
-<li>
-<ul><li><a href="#code_nginx_find_nginx_perl_code"><code>$nginx = find_nginx_perl ();</code></a></li>
-<li><a href="#code_CONFARGS_get_nginx_conf_args_di"><code>%CONFARGS = get_nginx_conf_args_dir $nginx;</code></a></li>
-<li><a href="#code_port_get_unused_port_code"><code>$port = get_unused_port ();</code></a></li>
-<li><a href="#code_rv_wait_for_peer_quot_host_port"><code>$rv = wait_for_peer &quot;$host:$port&quot;, $timeout;</code></a></li>
-<li><a href="#code_prepare_nginx_dir_die_dir_conf_"><code>prepare_nginx_dir_die $dir, $conf, $package1, $package2, ...;</code></a></li>
-<li><a href="#code_text_cat_nginx_logs_dir_code"><code>$text = cat_nginx_logs $dir;</code></a></li>
-<li><a href="#code_child_fork_nginx_die_nginx_dir_"><code>$child = fork_nginx_die $nginx, $dir;</code></a></li>
-<li><a href="#code_child_fork_child_die_sub_code"><code>$child = fork_child_die sub { ... };</code></a></li>
-<li><a href="#code_incs_get_nginx_incs_nginx_dir_c"><code>@incs = get_nginx_incs $nginx, $dir;</code></a></li>
-<li><a href="#code_child_peer_fork_nginx_handler_d"><code>($child, $peer) = fork_nginx_handler_dir $nginx, $dir, $conf, $code;</code></a></li>
-<li><a href="#code_body_headers_http_get_peer_uri_"><code>($body, $headers) = http_get $peer, $uri, $timeout;</code></a></li>
-</ul>
-</li>
+<ul><li><a href="#find_nginx_perl">find_nginx_perl</a></li>
+<li><a href="#get_unused_port">get_unused_port</a></li>
+<li><a href="#wait_for_peer_code_quot_host_port_qu">wait_for_peer <code>&quot;$host:$port&quot;, $timeout</code></a></li>
+<li><a href="#prepare_nginx_dir_die_code_dir_conf_">prepare_nginx_dir_die <code>$dir, $conf, @pkgs</code></a></li>
+<li><a href="#cat_nginx_logs_code_dir_code">cat_nginx_logs <code>$dir</code></a></li>
+<li><a href="#fork_nginx_die_code_nginx_dir_code">fork_nginx_die <code>$nginx, $dir</code></a></li>
+<li><a href="#fork_child_die_code_sub_code">fork_child_die <code>sub {}</code></a></li>
+<li><a href="#get_nginx_conf_args_dir_code_nginx_c">get_nginx_conf_args_dir <code>$nginx</code></a></li>
+<li><a href="#http_get_code_peer_uri_timeout_code">http_get <code>$peer, $uri, $timeout</code></a></li>
+<li><a href="#get_nginx_incs_code_nginx_dir_code">get_nginx_incs <code>$nginx, $dir</code></a></li>
+<li><a href="#fork_nginx_handler_dir_code_nginx_di">fork_nginx_handler_dir <code>$nginx, $dir, $conf, $code</code></a></li>
+<li><a href="#eval_wait_sub_code_name_timeout_sub_">eval_wait_sub <code>$name, $timeout, $sub</code></a></li>
+<li><a href="#connect_peer_code_quot_host_port_quo">connect_peer <code>&quot;$host:$port&quot;, $timeout</code></a></li>
+<li><a href="#send_data_code_sock_buf_timeout_code">send_data <code>$sock, $buf, $timeout</code></a></li>
+<li><a href="#parse_http_request_code_buf_r_code">parse_http_request <code>$buf, $r</code></a></li>
+<li><a href="#parse_http_response_code_buf_r_code">parse_http_response <code>$buf, $r</code></a></li>
+<li><a href="#inject_content_length_code_buf_code">inject_content_length <code>$buf</code></a></li>
+<li><a href="#read_http_response_code_sock_h_timeo">read_http_response <code>$sock, $h, $timeout</code></a></li>
+<li><a href="#make_path_code_path_code">make_path <code>$path</code></a></li>
+<li><a href="#cat_logs_code_dir_code">cat_logs <code>$dir</code></a></li>
 </ul>
 </li>
 <li><a href="#AUTHOR">AUTHOR</a></li>
@@ -139,7 +144,7 @@ div.pod ul li a { text-decoration: none; }
 
 <h1 id="NAME">NAME</h1>
 <div id="NAME_CONTENT">
-<p>Nginx::Test - simple framework for writing tests for nginx-perl and nginx</p>
+<p>Nginx::Test - testing framework for nginx-perl and nginx</p>
 
 </div>
 <h1 id="SYNOPSIS">SYNOPSIS</h1>
@@ -147,7 +152,7 @@ div.pod ul li a { text-decoration: none; }
 <pre>    use Nginx::Test;
 
     my $nginx = find_nginx_perl;
-    my $dir   = 'tmp/test';
+    my $dir   = make_path 'tmp/test';
 
     my ($child, $peer) = 
         fork_nginx_handler_die  $nginx, $dir, '', &lt;&lt;'END';
@@ -189,8 +194,18 @@ as a dependency for you module and use.</p>
     cat_nginx_logs
     fork_nginx_die
     fork_child_die
-    fork_nginx_handler_die
     http_get
+    get_nginx_incs
+    fork_nginx_handler_die
+    eval_wait_sub
+    connect_peer
+    send_data
+    parse_http_request
+    parse_http_response
+    inject_content_length
+    read_http_response
+    make_path
+    cat_logs
 
 </pre>
 
@@ -199,43 +214,40 @@ as a dependency for you module and use.</p>
 <div id="FUNCTIONS_CONTENT">
 
 </div>
-<h3 id="code_nginx_find_nginx_perl_code"><code>$nginx = find_nginx_perl ();</code></h3>
-<div id="code_nginx_find_nginx_perl_code_CONT">
-<p>Finds executable <cite>nginx-perl</cite> binary to run. Returns <code>undef</code> if
-can't find any or executable path otherwise. </p>
-<pre>    $nginx = './objs/nginx-perl'
+<h2 id="find_nginx_perl">find_nginx_perl</h2>
+<div id="find_nginx_perl_CONTENT">
+<p>Finds executable binary for <cite>nginx-perl</cite>. Returns executable path
+or <code>undef</code> if not found.</p>
+<pre>    my $nginx = find_nginx_perl
+        or die &quot;Cannot find nginx-perl\n&quot;;
+
+    # $nginx = './objs/nginx-perl'
 
 </pre>
 
 </div>
-<h3 id="code_CONFARGS_get_nginx_conf_args_di"><code>%CONFARGS = get_nginx_conf_args_dir $nginx;</code></h3>
-<div id="code_CONFARGS_get_nginx_conf_args_di-2">
-<p>Runs <code>nginx-perl -V</code> and parses its output to produce set
-of keys out of the list of configure arguments:</p>
-<pre>    %CONFARGS = ( '--with-http_ssl_module' =&gt; 1,
-                  '--with-...'             =&gt; 1  )
+<h2 id="get_unused_port">get_unused_port</h2>
+<div id="get_unused_port_CONTENT">
+<p>Returns available port number to bind to. Tries to use it first and returns
+<code>undef</code> if fails.</p>
+<pre>    $port = get_unused_port
+        or die &quot;No unused ports\n&quot;;
 
 </pre>
 
 </div>
-<h3 id="code_port_get_unused_port_code"><code>$port = get_unused_port ();</code></h3>
-<div id="code_port_get_unused_port_code_CONTE">
-<p>Gives you available port number to bind to. Tries to use it first.
-Returns undef on error.</p>
-
-</div>
-<h3 id="code_rv_wait_for_peer_quot_host_port"><code>$rv = wait_for_peer &quot;$host:$port&quot;, $timeout;</code></h3>
-<div id="code_rv_wait_for_peer_quot_host_port-2">
+<h2 id="wait_for_peer_code_quot_host_port_qu">wait_for_peer <code>&quot;$host:$port&quot;, $timeout</code></h2>
+<div id="wait_for_peer_code_quot_host_port_qu-2">
 <p>Tries to connect to <code>$host:$port</code> within <code>$timeout</code> seconds. Returns <code>1</code>
 on success and <code>undef</code> on error.</p>
 <pre>    wait_for_peer &quot;127.0.0.1:1234&quot;, 2
-        or ...;
+        or die &quot;Failed to connect to 127.0.0.1:1234 within 2 seconds&quot;;
 
 </pre>
 
 </div>
-<h3 id="code_prepare_nginx_dir_die_dir_conf_"><code>prepare_nginx_dir_die $dir, $conf, $package1, $package2, ...;</code></h3>
-<div id="code_prepare_nginx_dir_die_dir_conf_-2">
+<h2 id="prepare_nginx_dir_die_code_dir_conf_">prepare_nginx_dir_die <code>$dir, $conf, @pkgs</code></h2>
+<div id="prepare_nginx_dir_die_code_dir_conf_-2">
 <p>Creates directory tree suitable to run <cite>nginx-perl</cite> from. Puts there 
 config and packages specified as string scalars. Dies on errors.</p>
 <pre>    prepare_nginx_dir_die &quot;tmp/foo&quot;, &lt;&lt;'ENDCONF', &lt;&lt;'ENDONETWO';
@@ -267,24 +279,20 @@ config and packages specified as string scalars. Dies on errors.</p>
 </pre>
 
 </div>
-<h3 id="code_text_cat_nginx_logs_dir_code"><code>$text = cat_nginx_logs $dir;</code></h3>
-<div id="code_text_cat_nginx_logs_dir_code_CO">
-<p>Scans <code>$dir</code> for logs and concatenates them into a single scalar.
-Useful for diagnostics.</p>
-<pre>    prepate_nginx_dir_dir $dir, ... 
-    ...
-
-    ok $foo, &quot;bar&quot;, &quot;foo is bar&quot;
-        or diag cat_nginx_logs $dir;
+<h2 id="cat_nginx_logs_code_dir_code">cat_nginx_logs <code>$dir</code></h2>
+<div id="cat_nginx_logs_code_dir_code_CONTENT">
+<p>Returns all logs from <code>$dir.'/logs'</code> as a single scalar. Useful for 
+diagnostics.</p>
+<pre>    diag cat_nginx_logs $dir;
 
 </pre>
 
 </div>
-<h3 id="code_child_fork_nginx_die_nginx_dir_"><code>$child = fork_nginx_die $nginx, $dir;</code></h3>
-<div id="code_child_fork_nginx_die_nginx_dir_-2">
+<h2 id="fork_nginx_die_code_nginx_dir_code">fork_nginx_die <code>$nginx, $dir</code></h2>
+<div id="fork_nginx_die_code_nginx_dir_code_C">
 <p>Forks <cite>nginx-perl</cite> using executable binary from <code>$nginx</code> and 
-prepared directory path from <code>$dir</code>. Dies on errors.
-Internally does something like this: <code>&quot;$nginx -p $dir&quot;</code></p>
+prepared directory path from <code>$dir</code> and returns guard object. 
+Dies on errors. Internally does something like this: <code>&quot;$nginx -p $dir&quot;</code></p>
 <pre>    my $child = fork_nginx_die $nginx, $dir;
     ...
 
@@ -293,32 +301,62 @@ Internally does something like this: <code>&quot;$nginx -p $dir&quot;</code></p>
 </pre>
 
 </div>
-<h3 id="code_child_fork_child_die_sub_code"><code>$child = fork_child_die sub { ... };</code></h3>
-<div id="code_child_fork_child_die_sub_code_C">
-<p>Forks sub in a child process. Dies on errors.</p>
+<h2 id="fork_child_die_code_sub_code">fork_child_die <code>sub {}</code></h2>
+<div id="fork_child_die_code_sub_code_CONTENT">
+<p>Forks sub in a child process and returns its guard object. Dies on errors.</p>
 <pre>    my $child = fork_child_die sub {
         ...
-
         sleep 5;  
     };
-    ...
 
     undef $child;
 
 </pre>
 
 </div>
-<h3 id="code_incs_get_nginx_incs_nginx_dir_c"><code>@incs = get_nginx_incs $nginx, $dir;</code></h3>
-<div id="code_incs_get_nginx_incs_nginx_dir_c-2">
-<p>Generates proper <code>@INC</code> to use in <cite>nginx-perl.conf</cite> during tests.</p>
+<h2 id="get_nginx_conf_args_dir_code_nginx_c">get_nginx_conf_args_dir <code>$nginx</code></h2>
+<div id="get_nginx_conf_args_dir_code_nginx_c-2">
+<p>Runs <code>nginx-perl -V</code>, parses its output and returns a set of keys 
+out of the list of configure arguments. </p>
+<pre>    my %CONFARGS = get_nginx_conf_args_dir;
+
+    # %CONFARGS = ( '--with-http_ssl_module' =&gt; 1,
+    #               '--with-...'             =&gt; 1  )
+
+</pre>
 
 </div>
-<h3 id="code_child_peer_fork_nginx_handler_d"><code>($child, $peer) = fork_nginx_handler_dir $nginx, $dir, $conf, $code;</code></h3>
-<div id="code_child_peer_fork_nginx_handler_d-2">
+<h2 id="http_get_code_peer_uri_timeout_code">http_get <code>$peer, $uri, $timeout</code></h2>
+<div id="http_get_code_peer_uri_timeout_code_">
+<p>Connects to <code>$peer</code>, sends GET request and return its <code>$body</code> and 
+parsed <code>$headers</code>.</p>
+<pre>    my ($body, $headers) = http_get '127.0.0.1:1234', '/', 2;
+
+    $headers = {  _status          =&gt; 200,
+                  _message         =&gt; 'OK',
+                  _version         =&gt; 'HTTP/1.0',
+                  'content-type'   =&gt; ['text/html'],
+                  'content-length' =&gt; [1234],
+                  ...                               }
+
+</pre>
+
+</div>
+<h2 id="get_nginx_incs_code_nginx_dir_code">get_nginx_incs <code>$nginx, $dir</code></h2>
+<div id="get_nginx_incs_code_nginx_dir_code_C">
+<p>Returns proper <code>@INC</code> to use in <cite>nginx-perl.conf</cite> during tests. </p>
+<pre>    my @incs = get_nginx_incs $nginx, $dir;
+
+</pre>
+
+</div>
+<h2 id="fork_nginx_handler_dir_code_nginx_di">fork_nginx_handler_dir <code>$nginx, $dir, $conf, $code</code></h2>
+<div id="fork_nginx_handler_dir_code_nginx_di-2">
 <p>Gets unused port, prepares directory for nginx with predefined 
-package name, forks nginx and gives you child object and peer back.
-Allows to inject <code>$conf</code> into config and <code>$code</code> into the package.
-Expects to have <code>sub handler { ... }</code> in the code. Dies on errors.</p>
+package name, forks nginx and gives you a child object and generated 
+peer back. Allows to inject <code>$conf</code> into <cite>nginx-perl.conf</cite> and 
+<code>$code</code> into the package. Expects to found <code>sub handler { ... }</code> 
+in <code>$code</code>. Dies on errors.</p>
 <pre>    my ($child, $peer) = 
         fork_nginx_handler_die $nginx, $dir, &lt;&lt;'ENDCONF', &lt;&lt;'ENDCODE';
 
@@ -334,7 +372,6 @@ Expects to have <code>sub handler { ... }</code> in the code. Dies on errors.</p
         }
 
     ENDCODE
-
     ...
 
     undef $child; 
@@ -346,17 +383,146 @@ i.e. <cite>foo</cite>, <cite>foo/bar</cite>. And also expects <cite>blib/lib</ci
 to contain your libraries, which is where <cite>ExtUtils::MakeMaker</cite> puts them.</p>
 
 </div>
-<h3 id="code_body_headers_http_get_peer_uri_"><code>($body, $headers) = http_get $peer, $uri, $timeout;</code></h3>
-<div id="code_body_headers_http_get_peer_uri_-2">
-<p>Connects to <code>$peer</code>, sends GET request and return <code>$body</code> and <code>$headers</code>.</p>
-<pre>    my ($body, $headers) = http_get '127.0.0.1:1234', '/', 2;
+<h2 id="eval_wait_sub_code_name_timeout_sub_">eval_wait_sub <code>$name, $timeout, $sub</code></h2>
+<div id="eval_wait_sub_code_name_timeout_sub_-2">
+<p>Wraps <code>eval</code> block around subroutine <code>$sub</code>, sets alarm to <code>$timeout</code> 
+and waits for sub to finish. Returns undef on alarm and if <code>$sub</code> dies.</p>
+<pre>    my $rv = eval_wait_sub &quot;test1&quot;, 5, sub {
+        ...
+        pass &quot;test1&quot;;
+    };
 
-    $headers = {  _status        =&gt; 200,
-                  _message       =&gt; 'OK',
-                  _version       =&gt; 'HTTP/1.0',
-                  content-type   =&gt; ['text/html'],
-                  content-length =&gt; [1234],
-                  ...                               }
+    fail &quot;test1&quot;  unless $rv;
+
+</pre>
+
+</div>
+<h2 id="connect_peer_code_quot_host_port_quo">connect_peer <code>&quot;$host:$port&quot;, $timeout</code></h2>
+<div id="connect_peer_code_quot_host_port_quo-2">
+<p>Tries to connect to <code>$host:$port</code> within <code>$timeout</code> seconds.
+Returns socket handle on success or <code>undef</code> otherwise.</p>
+<pre>    $sock = connect_peer &quot;127.0.0.1:55555&quot;, 5
+        or ...;
+
+</pre>
+
+</div>
+<h2 id="send_data_code_sock_buf_timeout_code">send_data <code>$sock, $buf, $timeout</code></h2>
+<div id="send_data_code_sock_buf_timeout_code-2">
+<p>Sends an entire <code>$buf</code> to the socket <code>$sock</code> in <code>$timeout</code> seconds. 
+Returns amount of data sent on success or undef otherwise. This amount 
+is guessed since <code>print</code> is used to send data.</p>
+<pre>    send_data $sock, $buf, 5
+        or ...;
+
+</pre>
+
+</div>
+<h2 id="parse_http_request_code_buf_r_code">parse_http_request <code>$buf, $r</code></h2>
+<div id="parse_http_request_code_buf_r_code_C">
+<p>Parses HTTP request from <code>$buf</code> and puts parsed data structure into <code>$r</code>. 
+Returns length of the header in bytes on success or <code>undef</code> on error.
+Returns <code>0</code> if cannot find header separator <code>&quot;\n\n&quot;</code> in <code>$buf</code>.</p>
+<p>Data returned in the following form:</p>
+<pre>    $r = { 'connection'    =&gt; ['close'],
+           'content-type'  =&gt; ['text/html'],
+           ...
+           '_method'       =&gt; 'GET',
+           '_request_uri'  =&gt; '/?foo=bar',
+           '_version'      =&gt; 'HTTP/1.0',
+           '_uri'          =&gt; '/',
+           '_query_string' =&gt; 'foo=bar',
+           '_keepalive'    =&gt; 0              };
+
+</pre>
+<p>Example:</p>
+<pre>    $len = parse_http_request $buf, $r;
+
+    if ($len) {
+        # ok
+        substr $buf, 0, $len, '';
+        warn Dumper $r;
+    } elsif (defined $len) {
+        # read more data 
+        # and try again
+    } else {
+        # bad request
+    }
+
+</pre>
+
+</div>
+<h2 id="parse_http_response_code_buf_r_code">parse_http_response <code>$buf, $r</code></h2>
+<div id="parse_http_response_code_buf_r_code_">
+<p>Parses HTTP response from <code>$buf</code> and puts parsed data structure into <code>$r</code>. 
+Returns length of the header in bytes on success or <code>undef</code> on error.
+Returns <code>0</code> if cannot find header separator <code>&quot;\n\n&quot;</code> in <code>$buf</code>.</p>
+<p>Data returned in the following form:</p>
+<pre>    $r = { 'connection'   =&gt; ['close'],
+           'content-type' =&gt; ['text/html'],
+           ...
+           '_status'      =&gt; '404',
+           '_message'     =&gt; 'Not Found',
+           '_version'     =&gt; 'HTTP/1.0',
+           '_keepalive'   =&gt; 0              };
+
+</pre>
+<p>Example:</p>
+<pre>    $len = parse_http_response $buf, $r;
+
+    if ($len) {
+        # ok
+        substr $buf, 0, $len, '';
+        warn Dumper $r;
+    } elsif (defined $len) {
+        # read more data 
+        # and try again
+    } else {
+        # bad response
+    }
+
+</pre>
+
+</div>
+<h2 id="inject_content_length_code_buf_code">inject_content_length <code>$buf</code></h2>
+<div id="inject_content_length_code_buf_code_">
+<p>Parses HTTP header and inserts <strong>Content-Length</strong> if needed, assuming
+that <code>$buf</code> contains entire request or response.</p>
+<pre>    $buf = &quot;PUT /&quot;          .&quot;\x0d\x0a&quot;.
+           &quot;Host: foo.bar&quot;  .&quot;\x0d\x0a&quot;.
+           &quot;&quot;               .&quot;\x0d\x0a&quot;.
+           &quot;hello&quot;;
+
+    inject_content_length $buf;
+
+</pre>
+
+</div>
+<h2 id="read_http_response_code_sock_h_timeo">read_http_response <code>$sock, $h, $timeout</code></h2>
+<div id="read_http_response_code_sock_h_timeo-2">
+<p>Reads and parses HTTP response header from <code>$sock</code> into <code>$h</code>
+within <code>$timeout</code> seconds. 
+Returns true on success or <code>undef</code> on error.</p>
+<pre>    read_http_response $sock, $h, 5
+        or ...;
+
+</pre>
+
+</div>
+<h2 id="make_path_code_path_code">make_path <code>$path</code></h2>
+<div id="make_path_code_path_code_CONTENT">
+<p>Creates directory tree specified by <code>$path</code> and returns this path 
+or undef on error. </p>
+<pre>    $path = make_path 'tmp/foo'
+        or die &quot;Can't create tmp/foo: $!\n&quot;;
+
+</pre>
+
+</div>
+<h2 id="cat_logs_code_dir_code">cat_logs <code>$dir</code></h2>
+<div id="cat_logs_code_dir_code_CONTENT">
+<p>Scans directory <code>$dir</code> for logs, concatenates them and returns.</p>
+<pre>    diag cat_logs $dir;
 
 </pre>
 
@@ -368,7 +534,7 @@ to contain your libraries, which is where <cite>ExtUtils::MakeMaker</cite> puts 
 </div>
 <h1 id="LICENSE">LICENSE</h1>
 <div id="LICENSE_CONTENT">
-<p>Copyright 2011 Alexandr Gomoliako. All rights reserved.</p>
+<p>Copyright 2011-2012 Alexandr Gomoliako. All rights reserved.</p>
 <p>This module is free software. It may be used, redistributed and/or modified 
 under the same terms as <strong>nginx</strong> itself.</p>
 

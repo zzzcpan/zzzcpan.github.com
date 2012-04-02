@@ -6,7 +6,7 @@
 	<meta name="description" content="Pod documentation for Nginx" />
 	<meta name="inputfile" content="&lt;standard input&gt;" />
 	<meta name="outputfile" content="&lt;standard output&gt;" />
-	<meta name="created" content="Wed Mar 28 17:41:43 2012" />
+	<meta name="created" content="Mon Apr  2 23:53:36 2012" />
 	<meta name="generator" content="Pod::Xhtml 1.61" />
 </head>
 <style type="text/css"><!--
@@ -120,7 +120,10 @@ div.pod ul li a { text-decoration: none; }
 <li><a href="#INTERNAL_FUNCTIONS">INTERNAL FUNCTIONS</a>
 <ul>
 <li>
-<ul><li><a href="#code_uri_ngx_escape_uri_src_uri_type"><code>$uri = ngx_escape_uri $src_uri, $type</code>;</a></li>
+<ul><li><a href="#code_ngx_escape_uri_uri_type_code"><code>ngx_escape_uri $uri, $type</code>;</a></li>
+<li><a href="#code_ngx_http_time_time_code"><code>ngx_http_time $time</code></a></li>
+<li><a href="#code_ngx_http_cookie_time_time_code"><code>ngx_http_cookie_time $time</code></a></li>
+<li><a href="#code_ngx_http_parse_time_str_code"><code>ngx_http_parse_time $str</code></a></li>
 </ul>
 </li>
 </ul>
@@ -551,18 +554,19 @@ Which means there is no need to call $r-&gt;has_request_body there.</p>
 <div id="INTERNAL_FUNCTIONS_CONTENT">
 
 </div>
-<h3 id="code_uri_ngx_escape_uri_src_uri_type"><code>$uri = ngx_escape_uri $src_uri, $type</code>;</h3>
-<div id="code_uri_ngx_escape_uri_src_uri_type-2">
-<p>Escapes <code>$src_uri</code> using internal <code>ngx_escape_uri</code> function from 
+<h3 id="code_ngx_escape_uri_uri_type_code"><code>ngx_escape_uri $uri, $type</code>;</h3>
+<div id="code_ngx_escape_uri_uri_type_code_CO">
+<p>Escapes <code>$uri</code> using internal function ngx_escape_uri() from 
 <cite>src/core/ngx_string.c</cite>. If <code>$type</code> is specified, uses it or 
-NGX_ESCAPE_URI otherwise.</p>
+NGX_ESCAPE_URI otherwise. Returns escaped uri on success or 
+undef on error;</p>
 <pre>    my $foo = ngx_escape_uri 'a b';
       # gives 'a%20b'
 
     my $foo = ngx_escape_uri 'a b', NGX_ESCAPE_URI;
 
 </pre>
-<p>Type defines what characters to escape. </p>
+<p>Type defines what characters to escape:</p>
 <pre>    NGX_ESCAPE_URI                &quot; &quot;, &quot;#&quot;, &quot;%&quot;, &quot;?&quot;, 
                                   %00-%1F, %7F-%FF
 
@@ -579,6 +583,38 @@ NGX_ESCAPE_URI otherwise.</p>
                                   %00-%1F, %7F-%FF
 
     NGX_ESCAPE_MEMCACHED          &quot; &quot;, &quot;%&quot;, %00-%1F
+
+</pre>
+
+</div>
+<h3 id="code_ngx_http_time_time_code"><code>ngx_http_time $time</code></h3>
+<div id="code_ngx_http_time_time_code_CONTENT">
+<p>Returns <code>$time</code> in HTTP format. Uses internal function ngx_http_time()
+from <cite>src/core/ngx_times.c</cite>.</p>
+<pre>    my $tomorrow = ngx_http_time time + 86400;
+        # $tomorrow = 'Tue, 03 Apr 2012 20:14:41 GMT';
+
+</pre>
+
+</div>
+<h3 id="code_ngx_http_cookie_time_time_code"><code>ngx_http_cookie_time $time</code></h3>
+<div id="code_ngx_http_cookie_time_time_code_">
+<p>Returns <code>$time</code> in HTTP format suitable for Set-Cookie header. Uses 
+internal function ngx_http_cookie_time() from <cite>src/core/ngx_times.c</cite>.</p>
+<pre>    my $tomorrow = ngx_http_time time + 86400;
+        # $tomorrow = 'Tue, 03-Apr-12 20:14:41 GMT';
+
+</pre>
+
+</div>
+<h3 id="code_ngx_http_parse_time_str_code"><code>ngx_http_parse_time $str</code></h3>
+<div id="code_ngx_http_parse_time_str_code_CO">
+<p>Parses <code>$str</code> and returns timestamp. On error returns <code>undef</code>. Uses
+internal function ngx_http_parse_time() from <cite>src/http/ngx_http_parse_time.c</cite>.</p>
+<pre>    my $time = ngx_http_parse_time &quot;Thu, 01 Jan 1970 00:00:00 GMT&quot;
+        or die &quot;Cannot parse time\n&quot;;
+
+          # $time = '0'
 
 </pre>
 
